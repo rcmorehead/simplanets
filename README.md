@@ -1,4 +1,5 @@
 #simple-planets
 
-##Get your mock _Kepler_ planets here!
--------
+###A mock _Kepler_ planet catalog generating model and related scripts for use with [SIMPLE ABC](https://github.com/rcmorehead/SIMPLE-ABC)
+
+
