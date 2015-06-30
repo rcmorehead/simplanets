@@ -7,6 +7,10 @@ import pylab as plt
 
 class MyModel(Model):
 
+    """
+    Model is a follows:
+    """
+
         def __init__(self, stars):
             self.stars = stars
             #self.data = data
