@@ -8,7 +8,6 @@ import pickle
 import pylab as plt
 import time 
 from scipy import stats
-#from triangle import corner
 
 
 def main():
