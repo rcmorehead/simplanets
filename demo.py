@@ -7,7 +7,7 @@ from simpleabc import simple_abc
 import simple_model
 import numpy as np
 import pickle 
-import pylab as plt
+from scipy import stats
 import time
 
 
