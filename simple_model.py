@@ -3,7 +3,7 @@ from simpleabc.simple_abc import Model
 from scipy import stats
 import numpy as np
 import simple_lib
-import pylab as plt
+
 
 class MyModel(Model):
 
@@ -20,35 +20,29 @@ class MyModel(Model):
         theta = []
         for p in self.prior:
             theta.append(p.rvs())
-
         return theta
 
     def generate_data(self, theta):
 
-        planet_numbers = (self.planets_per_system(5,
-                          self.stars['ktc_kepler_id'].size))
-
-        total_planets = planet_numbers.sum()
-
-        star_header = ['ktc_kepler_id', 'teff', 'teff_err1', 'logg', 'feh',
-                   'feh_err1', 'mass', 'mass_err1', 'radius', 'radius_err1',
-                   'cdpp3', 'cdpp6', 'cdpp12', 'kepmag', 'days_obs']
-
-        planet_header = ['b', 'i', 'a', 'planet_mass', 'planet_radius', 'T',
-                         'period', 'mi', 'fund_plane', 'fund_node', 'e',
-                         'w', 'depth', 'snr']
-
-        #Initalize synthetic catalog.
-        catalog = np.zeros(planet_numbers.sum(),
-                            dtype={'names': star_header + planet_header,
-                            'formats': (['i8'] + ['f8'] *
-                                        (len(star_header + planet_header)
-                                        - 1))})
-
         #Draw the random model parameters.
+        if (theta[0] < 0 or theta[1] < 0.0 or theta[2] < 0.0 or
+                theta[0] > 90.0 or theta[1] >= 1.0):
 
-        if theta[0] < 0.5 or theta[1] <= 0.0 or theta[0] > 1.0 or theta[1] >= 1.0:
+            planet_numbers = np.ones(1)
+            total_planets = planet_numbers.sum()
+            catalog, star_header, planet_header = self.init_catalog(
+                                                        total_planets)
             return catalog
+
+        else:
+            planet_numbers = (self.planets_per_system(theta[2],
+                          self.stars['ktc_kepler_id'].size))
+            total_planets = planet_numbers.sum()
+            catalog, star_header, planet_header = self.init_catalog(
+                                                        total_planets)
+
+
+
 
         catalog['period'] = self.planet_period(total_planets)
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
@@ -97,6 +91,24 @@ class MyModel(Model):
         #print catalog['T'].min(),catalog['T'].max()
         return catalog
 
+    def init_catalog(self, total_planets):
+
+        star_header = ['ktc_kepler_id', 'teff', 'teff_err1', 'logg', 'feh',
+                   'feh_err1', 'mass', 'mass_err1', 'radius', 'radius_err1',
+                   'cdpp3', 'cdpp6', 'cdpp12', 'kepmag', 'days_obs']
+
+        planet_header = ['b', 'i', 'a', 'planet_mass', 'planet_radius', 'T',
+                         'period', 'mi', 'fund_plane', 'fund_node', 'e',
+                         'w', 'depth', 'snr']
+
+        #Initalize synthetic catalog.
+        catalog = np.zeros(total_planets,
+                            dtype={'names': star_header + planet_header,
+                            'formats': (['i8'] + ['f8'] *
+                                        (len(star_header + planet_header)
+                                        - 1))})
+        return catalog, star_header, planet_header
+
     def summary_stats(self, data):
         #xi(data)
         #return [0,0,0]
@@ -111,8 +123,8 @@ class MyModel(Model):
         #            + (summary_stats_synth[0]-summary_stats[1])**2)
         return d
 
-    def planets_per_system(self, n, size):
-        return stats.binom.rvs(n, .5, size=size)
+    def planets_per_system(self, Lambda, size):
+        return stats.poisson.rvs(Lambda, size=size)
 
     def planet_period(self, size):
         return 10**stats.uniform.rvs(0, 3, size=size)
@@ -124,7 +136,6 @@ class MyModel(Model):
         return np.degrees(np.arccos(2*stats.uniform.rvs(0, 1, size)-1))
 
     def mutual_inclination(self, scale, size):
-        scale = 90 - np.arccos(2 * scale - 1)*180/np.pi
         return stats.rayleigh.rvs(scale, size=size)
 
     def eccentricity(self, scale, size):
