@@ -264,3 +264,25 @@ def xi(catalog):
     #idx = np.where(P_ratio >= 1.0)
     #print P_ratio
     return np.log10(D_ratio * P_ratio**(1./3.))
+
+def multi_count(catalog):
+    """
+    One-line description
+
+    Full description
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+
+    """
+
+    count = np.bincount(catalog['ktc_kepler_id'])
+
+    return count[count > 0]

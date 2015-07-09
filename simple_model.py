@@ -4,7 +4,6 @@ from scipy import stats
 import numpy as np
 import simple_lib
 
-
 class MyModel(Model):
 
     """
@@ -112,12 +111,14 @@ class MyModel(Model):
     def summary_stats(self, data):
         #xi(data)
         #return [0,0,0]
-        return simple_lib.xi(data)
+        return (simple_lib.xi(data),simple_lib.multi_count(data))
         #xi_data = xi(data)
         #return (xi_data.mean(), xi_data.var())
 
     def distance_function(self, summary_stats, summary_stats_synth):
-        d = stats.ks_2samp(summary_stats, summary_stats_synth)[0]
+        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
+        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+        d = np.sqrt(d1**2 + d2**2)
         #ksd_sc = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
         #d = np.sqrt((summary_stats_synth[0]-summary_stats[0])**2
         #            + (summary_stats_synth[0]-summary_stats[1])**2)
