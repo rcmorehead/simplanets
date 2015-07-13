@@ -263,7 +263,12 @@ def xi(catalog):
 
     #idx = np.where(P_ratio >= 1.0)
     #print P_ratio
-    return np.log10(D_ratio * P_ratio**(1./3.))
+    logxi = np.log10(D_ratio * P_ratio**(1./3.))
+    if logxi.size < 1:
+        xi_fraction = 0.0
+    else:
+        xi_fraction = logxi[logxi >= 0.0].size/float(logxi.size)
+    return logxi, xi_fraction
 
 def multi_count(catalog):
     """
@@ -286,3 +291,23 @@ def multi_count(catalog):
     count = np.bincount(catalog['ktc_kepler_id'])
 
     return count[count > 0]
+
+def normed_duration(catalog):
+    """
+    One-line description
+
+    Full description
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+
+    """
+
+    return (catalog['T']/day_hrs)/(catalog['period'])**(1/3.0)

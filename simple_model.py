@@ -45,7 +45,7 @@ class MyModel(Model):
 
         catalog['period'] = self.planet_period(total_planets)
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
-        catalog['fund_plane'] = self.fundamental_plane(total_planets)
+
         catalog['fund_node'] = self.fundamental_node(total_planets)
         catalog['e'] = self.eccentricity(theta[1], total_planets)
         catalog['w'] = self.longitude_ascending_node(total_planets)
@@ -55,6 +55,7 @@ class MyModel(Model):
 
         # print catalog.dtype.names
 
+        catalog['fund_plane'] = self.fundamental_plane(catalog)
         #Compute derived parameters.
         catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
                                                  catalog['mass'])
@@ -111,14 +112,16 @@ class MyModel(Model):
     def summary_stats(self, data):
         #xi(data)
         #return [0,0,0]
-        return (simple_lib.xi(data),simple_lib.multi_count(data))
+        return (simple_lib.normed_duration(data), simple_lib.multi_count(data),
+                simple_lib.xi(data)[1])
         #xi_data = xi(data)
         #return (xi_data.mean(), xi_data.var())
 
     def distance_function(self, summary_stats, summary_stats_synth):
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-        d = np.sqrt(d1**2 + d2**2)
+        d3 = summary_stats_synth[2] - summary_stats[2]
+        d = np.sqrt(d1**2 + d2**2 + d3**2)
         #ksd_sc = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
         #d = np.sqrt((summary_stats_synth[0]-summary_stats[0])**2
         #            + (summary_stats_synth[0]-summary_stats[1])**2)
@@ -133,8 +136,12 @@ class MyModel(Model):
     def fundamental_node(self, size):
         return stats.uniform.rvs(0, 360, size=size)
 
-    def fundamental_plane(self, size):
-        return np.degrees(np.arccos(2*stats.uniform.rvs(0, 1, size)-1))
+    def fundamental_plane(self, catalog):
+        draws = np.degrees(np.arccos(2*stats.uniform.rvs(0, 1,
+                         size=np.arange(0, catalog['ktc_kepler_id'].max() + 1,
+                                        1).size) -1 ))
+        return draws[catalog['ktc_kepler_id']]
+
 
     def mutual_inclination(self, scale, size):
         return stats.rayleigh.rvs(scale, size=size)
