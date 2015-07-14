@@ -42,7 +42,7 @@ OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part, steps
                         target_epsilon=eps, parallel=False)
 end = time.time()
 print 'Serial took {}s'.format(end - start)
-out_pickle = file('simptest.pkl', 'w')
+out_pickle = file('demo.pkl', 'w')
 pickle.dump(OT, out_pickle)
 out_pickle.close()
 
