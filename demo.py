@@ -8,14 +8,14 @@ from scipy import stats
 import time
 
 
-np.random.seed(914)
+np.random.seed(1138)
 
-steps = 15
+steps = 20
 eps = 0.25
-min_part = 100
+min_part = 50
 
-#stars = pickle.load(file('stars.pkl'))
-stars = pickle.load(file('stars_trimmed.pkl'))
+stars = pickle.load(file('stars.pkl'))
+#stars = pickle.load(file('stars_trimmed.pkl'))
 #obs = pickle.load(file('data.pkl'))
 
 model = simple_model.MyModel(stars)
@@ -28,7 +28,7 @@ model.set_prior([stats.uniform(0, 90.0),
 
 
 #theta = (0.513265306122, 0.1)
-theta = (2.0, 0.1, 5)
+theta = (2.0, 0.05, 10)
 
 obs = model.generate_data(theta)
 model.set_data(obs)
