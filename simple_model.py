@@ -24,8 +24,8 @@ class MyModel(Model):
     def generate_data(self, theta):
 
         #Draw the random model parameters.
-        if (theta[0] < 0 or theta[1] < 0.0 or theta[2] < 0.0 or
-                theta[0] > 90.0 or theta[1] >= 1.0):
+        if (theta[0] < 0  or theta[1] < 0.0 or
+                theta[0] > 90.0 ):
 
             planet_numbers = np.ones(1)
             total_planets = planet_numbers.sum()
@@ -147,7 +147,8 @@ class MyModel(Model):
         return stats.rayleigh.rvs(scale, size=size)
 
     def eccentricity(self, scale, size):
-        return stats.rayleigh.rvs(scale=scale, size=size)
+        #return stats.rayleigh.rvs(scale=scale, size=size)
+        return np.zeros(size)
 
     def longitude_ascending_node(self, size):
         return stats.uniform.rvs(0, 360, size)
