@@ -34,7 +34,7 @@ class MyModel(Model):
             return catalog
 
         else:
-            planet_numbers = (self.planets_per_system(theta[2],
+            planet_numbers = (self.planets_per_system(theta[1],
                           self.stars['ktc_kepler_id'].size))
             total_planets = planet_numbers.sum()
             catalog, star_header, planet_header = self.init_catalog(
