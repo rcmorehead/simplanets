@@ -26,7 +26,7 @@ obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
 obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
 
 model.set_prior([stats.uniform(0, 90.0),
-                stats.uniform(0,20)])
+                stats.uniform(0,10)])
 
 model.set_data(obs)
 
@@ -37,6 +37,6 @@ OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part, steps
                         target_epsilon=eps, parallel=False)
 end = time.time()
 print 'Serial took {}s'.format(end - start)
-out_pickle = file('kepler_pmc_multies_only_no_ecc.pkl', 'w')
+out_pickle = file('kepler_pmc_multies_only_no_ecc_N10.pkl', 'w')
 pickle.dump(OT, out_pickle)
 out_pickle.close()

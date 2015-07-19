@@ -25,7 +25,7 @@ class MyModel(Model):
 
         #Draw the random model parameters.
         if (theta[0] < 0  or theta[1] < 0.0 or
-                theta[0] > 90.0 ):
+                theta[0] > 90.0 or theta > 10):
 
             planet_numbers = np.ones(1)
             total_planets = planet_numbers.sum()
