@@ -112,20 +112,21 @@ class MyModel(Model):
     def summary_stats(self, data):
         #xi(data)
         #return [0,0,0]
-        return (simple_lib.normed_duration(data), simple_lib.multi_count(data),
-                simple_lib.xi(data)[1])
+        #return (simple_lib.normed_duration(data), simple_lib.multi_count(data),
+        #        simple_lib.xi(data)[1])
+        return simple_lib.xi(data)[0]
         #xi_data = xi(data)
         #return (xi_data.mean(), xi_data.var())
 
     def distance_function(self, summary_stats, summary_stats_synth):
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
-        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-        d3 = summary_stats_synth[2] - summary_stats[2]
-        d = np.sqrt(d1**2 + d2**2 + d3**2)
+        #d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+        #d3 = summary_stats_synth[2] - summary_stats[2]
+        #d = np.sqrt(d1**2 + d2**2 + d3**2)
         #ksd_sc = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
         #d = np.sqrt((summary_stats_synth[0]-summary_stats[0])**2
         #            + (summary_stats_synth[0]-summary_stats[1])**2)
-        return d
+        return d1
 
     def planets_per_system(self, Lambda, size):
         return stats.poisson.rvs(Lambda, size=size)
