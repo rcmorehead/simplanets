@@ -292,6 +292,18 @@ def multi_count(catalog):
 
     return count[count > 0]
 
+def multies_only(catalog):
+    multi = np.zeros(catalog['ktc_kepler_id'].size, dtype="bool_")
+    for i in range(catalog['ktc_kepler_id'].size):
+        if np.where(catalog['ktc_kepler_id'] == catalog['ktc_kepler_id'][i])[0].size == 1:
+            multi[i] = False
+        else:
+            multi[i] = True
+
+    return multi
+
+    return catalog[count > 1]
+
 def normed_duration(catalog):
     """
     One-line description
