@@ -19,7 +19,7 @@ obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
 obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
 
 model.set_prior([stats.uniform(0, 90.0),
-                 stats.unifrom(0, 1),
+                 stats.uniform(0, 1),
                  stats.uniform(0, 20)])
 
 model.set_data(obs)

@@ -22,7 +22,7 @@ theta_0 = (2.0, 0.1, 9)
 obs = model.generate_data(theta_0)
 
 model.set_prior([stats.uniform(0, 90.0),
-                 stats.unifrom(0, 1),
+                 stats.uniform(0, 1),
                  stats.uniform(0, 20)])
 
 model.set_data(obs)
