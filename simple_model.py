@@ -25,7 +25,7 @@ class MyModel(Model):
 
         #Draw the random model parameters.
         if (theta[0] < 0  or theta[1] < 0.0 or
-                theta[0] > 90.0 or theta > 10):
+                theta[0] > 90.0 or theta[1] > 10):
 
             planet_numbers = np.ones(1)
             total_planets = planet_numbers.sum()
@@ -87,6 +87,8 @@ class MyModel(Model):
         # #Strip nans from T  (planets in giant stars)
         catalog = np.extract((~np.isnan(catalog['snr'])
                               == True) & (catalog['snr'] > 10.0), catalog)
+
+        catalog = simple_lib.multies_only(catalog)
         #
         #print catalog['T'].min(),catalog['T'].max()
         return catalog

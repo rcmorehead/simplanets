@@ -300,9 +300,7 @@ def multies_only(catalog):
         else:
             multi[i] = True
 
-    return multi
-
-    return catalog[count > 1]
+    return catalog[multi > 1]
 
 def normed_duration(catalog):
     """
