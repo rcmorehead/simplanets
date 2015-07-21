@@ -24,7 +24,7 @@ class MyModel(Model):
     def generate_data(self, theta):
 
         #Draw the random model parameters.
-        if (theta[0] < 0  or theta[1] < 0.0 or
+        if (theta[0] < 0 or theta[1] < 0.0 or
                 theta[0] > 90.0 or theta[1] > 10):
 
             planet_numbers = np.ones(1)
@@ -88,9 +88,11 @@ class MyModel(Model):
         catalog = np.extract((~np.isnan(catalog['snr'])
                               == True) & (catalog['snr'] > 10.0), catalog)
 
-        catalog = simple_lib.multies_only(catalog)
+        #catalog = simple_lib.multies_only(catalog)
         #
         #print catalog['T'].min(),catalog['T'].max()
+        #print "pow"
+        #print catalog
         return catalog
 
     def init_catalog(self, total_planets):
@@ -116,7 +118,11 @@ class MyModel(Model):
         #return [0,0,0]
         #return (simple_lib.normed_duration(data), simple_lib.multi_count(data),
         #        simple_lib.xi(data)[1])
-        return simple_lib.xi(data)[0]
+        #print data.dtype.names
+        if data.size == 0:
+            return np.ones(2)*1e6
+        else:
+            return simple_lib.xi(data)[0]
         #xi_data = xi(data)
         #return (xi_data.mean(), xi_data.var())
 

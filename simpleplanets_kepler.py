@@ -30,7 +30,7 @@ model.set_prior([stats.uniform(0, 90.0),
 
 model.set_data(obs)
 
-n_procs = [1, 2, 3, 4, 5, 6, 7, 8]
+
 
 start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part, steps=steps,
@@ -38,5 +38,5 @@ OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part, steps
 end = time.time()
 print 'Serial took {}s'.format(end - start)
 out_pickle = file('kepler_pmc_multies_only_no_ecc_N10.pkl', 'w')
-pickle.dump(OT, out_pickle)
+#pickle.dump(OT, out_pickle)
 out_pickle.close()
