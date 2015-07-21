@@ -24,14 +24,14 @@ class MyModel(Model):
     def generate_data(self, theta):
 
         #Draw the random model parameters.
-        if (theta[0] < 0 or theta[1] < 0.0 or
-                theta[0] > 90.0 or theta[1] > 10):
+        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or
+            theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20):
 
-            planet_numbers = np.ones(1)
-            total_planets = planet_numbers.sum()
-            catalog, star_header, planet_header = self.init_catalog(
-                                                        total_planets)
-            return catalog
+            #planet_numbers = np.ones(1)
+            #total_planets = planet_numbers.sum()
+            #catalog, star_header, planet_header = self.init_catalog(
+                                                        #total_planets)
+            return np.array([])
 
         else:
             planet_numbers = (self.planets_per_system(theta[1],
@@ -88,11 +88,6 @@ class MyModel(Model):
         catalog = np.extract((~np.isnan(catalog['snr'])
                               == True) & (catalog['snr'] > 10.0), catalog)
 
-        #catalog = simple_lib.multies_only(catalog)
-        #
-        #print catalog['T'].min(),catalog['T'].max()
-        #print "pow"
-        #print catalog
         return catalog
 
     def init_catalog(self, total_planets):
@@ -120,21 +115,18 @@ class MyModel(Model):
         #        simple_lib.xi(data)[1])
         #print data.dtype.names
         if data.size == 0:
-            return np.ones(2)*1e6
+            return (np.ones(2)*1e9, np.ones(2)*1e9)
         else:
-            return simple_lib.xi(data)[0]
-        #xi_data = xi(data)
-        #return (xi_data.mean(), xi_data.var())
+            return (simple_lib.xi(simple_lib.multies_only(data))[0],
+                    simple_lib.multi_count(data))
+
 
     def distance_function(self, summary_stats, summary_stats_synth):
-        d1 = stats.ks_2samp(summary_stats, summary_stats_synth)[0]
-        #d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-        #d3 = summary_stats_synth[2] - summary_stats[2]
-        #d = np.sqrt(d1**2 + d2**2 + d3**2)
-        #ksd_sc = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-        #d = np.sqrt((summary_stats_synth[0]-summary_stats[0])**2
-        #            + (summary_stats_synth[0]-summary_stats[1])**2)
-        return d1
+        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
+        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+
+        d = np.sqrt(d1**2 + d2**2)
+        return d
 
     def planets_per_system(self, Lambda, size):
         return stats.poisson.rvs(Lambda, size=size)
@@ -156,8 +148,8 @@ class MyModel(Model):
         return stats.rayleigh.rvs(scale, size=size)
 
     def eccentricity(self, scale, size):
-        #return stats.rayleigh.rvs(scale=scale, size=size)
-        return np.zeros(size)
+        return stats.rayleigh.rvs(scale=scale, size=size)
+
 
     def longitude_ascending_node(self, size):
         return stats.uniform.rvs(0, 360, size)

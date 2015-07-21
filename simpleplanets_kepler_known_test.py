@@ -14,9 +14,12 @@ stars = pickle.load(file('stars.pkl'))
 
 model = simple_model.MyModel(stars)
 
-obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
-obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
-obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
+#obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
+#obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
+#obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
+
+theta_0 = (2.0, 0.1, 9)
+obs = model.generate_data(theta_0)
 
 model.set_prior([stats.uniform(0, 90.0),
                  stats.unifrom(0, 1),
@@ -29,6 +32,6 @@ OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part,
                         steps=steps, target_epsilon=eps, parallel=False)
 end = time.time()
 print 'Serial took {}s'.format(end - start)
-out_pickle = file('kepler_pmc_xi_based.pkl', 'w')
+out_pickle = file('kepler_pmc_xi_based_known.pkl', 'w')
 pickle.dump(OT, out_pickle)
 out_pickle.close()

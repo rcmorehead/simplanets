@@ -12,7 +12,7 @@ np.random.seed(914)
 
 steps = 15
 eps = 0.25
-min_part = 100
+min_part = 10
 
 #stars = pickle.load(file('stars.pkl'))
 stars = pickle.load(file('stars_trimmed.pkl'))
