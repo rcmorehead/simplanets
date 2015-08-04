@@ -118,7 +118,7 @@ class MyModel(Model):
             return (np.ones(2)*1e9, np.ones(2)*1e9)
         else:
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    simple_lib.multi_count(data))
+                    simple_lib.multi_count(data, self.stars))
 
 
     def distance_function(self, summary_stats, summary_stats_synth):
