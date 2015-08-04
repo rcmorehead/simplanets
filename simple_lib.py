@@ -270,7 +270,7 @@ def xi(catalog):
         xi_fraction = logxi[logxi >= 0.0].size/float(logxi.size)
     return logxi, xi_fraction
 
-def multi_count(catalog):
+def multi_count(catalog, stars):
     """
     One-line description
 
@@ -287,10 +287,13 @@ def multi_count(catalog):
 
 
     """
+    count = np.zeros(stars['ktc_kepler_id'].size)
 
-    count = np.bincount(catalog['ktc_kepler_id'])
+    bincount = np.bincount(catalog['ktc_kepler_id'])
+    bincount = bincount[bincount > 0]
+    count[:bincount.size] = bincount
 
-    return count[count > 0]
+    return count
 
 def multies_only(catalog):
     multi = np.zeros(catalog['ktc_kepler_id'].size, dtype="bool_")
