@@ -131,7 +131,10 @@ class MyModel(Model):
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
 
         #Histogram distance for count
-        maxbin = int(np.maximum(summary_stats[1],summary_stats_synth[1]).max())
+        max1 = summary_stats[1].max()
+        max2 = summary_stats_synth[1].max()
+
+        maxbin = int(max(max1, max2))
         h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
         h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
 
