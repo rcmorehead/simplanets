@@ -9,18 +9,20 @@ class MyModel(Model):
     """
     Model is a follows:
     """
-
+    #@profile
     def __init__(self, stars):
         self.stars = stars
         #self.data = data
         #self.data_sum_stats = self.summary_stats(self.data)
 
+    #@profile
     def draw_theta(self):
         theta = []
         for p in self.prior:
             theta.append(p.rvs())
         return theta
 
+    #@profile
     def generate_data(self, theta):
 
         #Draw the random model parameters.
@@ -90,6 +92,7 @@ class MyModel(Model):
 
         return catalog
 
+    #@profile
     def init_catalog(self, total_planets):
 
         star_header = ['ktc_kepler_id', 'teff', 'teff_err1', 'logg', 'feh',
@@ -108,6 +111,7 @@ class MyModel(Model):
                                         - 1))})
         return catalog, star_header, planet_header
 
+    #@profile
     def summary_stats(self, data):
         #xi(data)
         #return [0,0,0]
@@ -120,40 +124,54 @@ class MyModel(Model):
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
                     simple_lib.multi_count(data, self.stars))
 
-
+    #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
-        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
-        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
 
-        d = np.sqrt(d1**2 + d2**2)
+        #KS Distance for xi
+        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
+
+        #Histogram distance for count
+        maxbin = int(np.maximum(summary_stats[1],summary_stats_synth[1]).max())
+        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
+        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
+
+        d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
+
         return d
 
+    #@profile
     def planets_per_system(self, Lambda, size):
         return stats.poisson.rvs(Lambda, size=size)
 
+    #@profile
     def planet_period(self, size):
         return 10**stats.uniform.rvs(0, 3, size=size)
 
+    #@profile
     def fundamental_node(self, size):
         return stats.uniform.rvs(0, 360, size=size)
 
+    #@profile
     def fundamental_plane(self, catalog):
         draws = np.degrees(np.arccos(2*stats.uniform.rvs(0, 1,
                          size=np.arange(0, catalog['ktc_kepler_id'].max() + 1,
                                         1).size) -1 ))
         return draws[catalog['ktc_kepler_id']]
 
-
+    #@profile
     def mutual_inclination(self, scale, size):
         return stats.rayleigh.rvs(scale, size=size)
 
+    #@profile
     def eccentricity(self, scale, size):
         return stats.rayleigh.rvs(scale=scale, size=size)
 
-
+    #@profile
     def longitude_ascending_node(self, size):
         return stats.uniform.rvs(0, 360, size)
 
+    #@profile
     def planet_radius(self, size):
         return (10**stats.uniform.rvs(np.log10(1.0), np.log10(19.0),
                 size=size))
+

@@ -32,6 +32,6 @@ OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part,
                         steps=steps, target_epsilon=eps, parallel=False)
 end = time.time()
 print 'Serial took {}s'.format(end - start)
-out_pickle = file('kepler_pmc_xi_based_known_possion_zero.pkl', 'w')
+out_pickle = file('kepler_pmc_xi_based_known_each_bin_dist.pkl', 'w')
 pickle.dump(OT, out_pickle)
 out_pickle.close()

@@ -7,6 +7,8 @@ r_sun_au = 0.004649
 r_earth_r_sun = 0.009155
 day_hrs = 24.0
 
+
+#@profile
 def impact_parameter(a, e, i, w, r_star):
     """
     Compute the impact parameter at for a transiting planet.
@@ -53,6 +55,7 @@ def impact_parameter(a, e, i, w, r_star):
               (1 - e**2) / (1 + e * np.sin(np.radians(w))))
 
 
+#@profile
 def inclination(fund_plane, mutual_inc, node):
     """
     Compute the inclination of a planet.
@@ -103,7 +106,7 @@ def inclination(fund_plane, mutual_inc, node):
                       np.sin(fund_plane) * np.sin(mutual_inc) * np.cos(node)))
 
 
-
+#@profile
 def semimajor_axis(period, mass):
     """
     Compute the semimajor axis of an object.
@@ -134,6 +137,7 @@ def semimajor_axis(period, mass):
     return (((2.959E-4*mass)/(4*np.pi**2))*period**2.0) ** (1.0/3.0)
 
 
+#@profile
 def transit_depth(r_star, r_planet):
     """
     One-line description
@@ -153,6 +157,8 @@ def transit_depth(r_star, r_planet):
     """
     return ((r_planet * r_earth_r_sun)/r_star)**2 * 1e6
 
+
+#@profile
 def transit_duration(p, a, e, i, w, b, r_star, r_planet):
     """
     Compute the full (Q1-Q4) transit duration.
@@ -210,6 +216,7 @@ def transit_duration(p, a, e, i, w, b, r_star, r_planet):
     return duration
 
 
+#@profile
 def snr(catalog):
     """
     Calculate Signal to Noise ratio for a planet transit
@@ -234,6 +241,7 @@ def snr(catalog):
                                                         catalog['T']/6.0)
 
 
+#@profile
 def xi(catalog):
     """
     One-line description
@@ -270,6 +278,8 @@ def xi(catalog):
         xi_fraction = logxi[logxi >= 0.0].size/float(logxi.size)
     return logxi, xi_fraction
 
+
+#@profile
 def multi_count(catalog, stars):
     """
     One-line description
@@ -295,16 +305,20 @@ def multi_count(catalog, stars):
 
     return count
 
+
+#@profile
 def multies_only(catalog):
-    multi = np.zeros(catalog['ktc_kepler_id'].size, dtype="bool_")
-    for i in range(catalog['ktc_kepler_id'].size):
-        if np.where(catalog['ktc_kepler_id'] == catalog['ktc_kepler_id'][i])[0].size == 1:
-            multi[i] = False
-        else:
-            multi[i] = True
 
-    return catalog[multi]
+    unq, unq_idx, unq_cnt = np.unique(catalog['ktc_kepler_id'],
+                                      return_inverse=True,
+                                      return_counts=True)
+    cnt_mask = unq_cnt > 1
+    cnt_idx, = np.nonzero(cnt_mask)
+    idx_mask = np.in1d(unq_idx, cnt_idx)
+    return catalog[idx_mask]
 
+
+#@profile
 def normed_duration(catalog):
     """
     One-line description
