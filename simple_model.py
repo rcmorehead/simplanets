@@ -119,14 +119,16 @@ class MyModel(Model):
         #        simple_lib.xi(data)[1])
         #print data.dtype.names
         if data.size == 0:
-            return (np.ones(2)*1e9, np.ones(2)*1e9)
+            return False
         else:
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
                     simple_lib.multi_count(data, self.stars))
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
-
+        
+        if summary_stats == False or summary_stats_synth == False:
+            return 1e9
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
 
