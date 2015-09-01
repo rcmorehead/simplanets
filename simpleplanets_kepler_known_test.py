@@ -8,7 +8,7 @@ import time
 
 steps = 10
 eps = 1
-min_part = 25
+min_part = 100
 
 stars = pickle.load(file('stars.pkl'))
 
@@ -30,7 +30,7 @@ model.set_data(obs)
 start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part,
                         steps=2, target_epsilon=eps, parallel=False)
-out_pickle = file('pickles/kepler_pmc_xi_based_each_bin_dist_25_KNOWN_prime.pkl', 'w')
+out_pickle = file('pickles/kepler_pmc_xi_based_each_bin_dist_100_KNOWN_prime.pkl', 'w')
 pickle.dump(OT, out_pickle)
 out_pickle.close()
 
@@ -38,7 +38,7 @@ for i in range(0, steps):
     PT = OT
     OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part,
                         resume=PT, steps=2, target_epsilon=eps, parallel=False)
-    out_pickle = file('pickles/kepler_pmc_xi_based_each_bin_dist_25_KNOW__{:}.pkl'.format(i),
+    out_pickle = file('pickles/kepler_pmc_xi_based_each_bin_dist_100_KNOW__{:}.pkl'.format(i),
                       'w')
     pickle.dump(OT, out_pickle)
     out_pickle.close()
