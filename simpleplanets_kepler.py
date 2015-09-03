@@ -4,19 +4,28 @@ import numpy as np
 import pickle
 from scipy import stats
 import time
+import sys
 
-
-steps = 10
-eps = 1
-min_part = 100
+name = sys.argv[1]
+steps = sys.argv[2]
+eps = sys.argv[3]
+min_part = sys.argv[4]
+known = sys.argv[5]
 
 stars = pickle.load(file('stars.pkl'))
 
 model = simple_model.MyModel(stars)
 
-obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
-obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
-obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
+if known:
+    theta_0 = (2.0, 0.1, 9)
+    obs = model.generate_data(theta_0)
+    print obs[0:3]
+else:
+    obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
+    obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
+    obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
+    print obs[0:3]
+
 
 model.set_prior([stats.uniform(0, 90.0),
                  stats.uniform(0, 1),
@@ -25,18 +34,24 @@ model.set_prior([stats.uniform(0, 90.0),
 model.set_data(obs)
 
 start = time.time()
-OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part,
-                        steps=2, target_epsilon=eps, parallel=False)
-out_pickle = file('pickles/kepler_pmc_xi_based_each_bin_dist_100_prime.pkl', 'w')
+OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
+                        steps=1, parallel=False)
+if known:
+    out_pickle = file('RUNS/{:0}/KNOWN/{:0}_{:1]samples_0.pkl'.format(name, min_part), 'w')
+else:
+    out_pickle = file('RUNS/{:0}/SCIENCE/{:0}_{:1]samples_0.pkl'.format(name, min_part), 'w')
+
 pickle.dump(OT, out_pickle)
 out_pickle.close()
 
-for i in range(0, steps):
+for i in range(1, steps):
     PT = OT
-    OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_particles=min_part,
-                        resume=PT, steps=2, target_epsilon=eps, parallel=False)
-    out_pickle = file('pickles/kepler_pmc_xi_based_each_bin_dist_100_{:}.pkl'.format(i),
-                      'w')
+    OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
+                        resume=PT, steps=1, parallel=False)
+    if known:
+        out_pickle = file('RUNS/{:0}/KNOWN/{:0}_{:1]samples_{:2}.pkl'.format(name, min_part, i), 'w')
+    else:
+        out_pickle = file('RUNS/{:0}/SCIENCE/{:0}_{:1]samples_{:2}.pkl'.format(name, min_part, i), 'w')
     pickle.dump(OT, out_pickle)
     out_pickle.close()
 
