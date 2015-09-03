@@ -37,9 +37,9 @@ start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
                         steps=1, parallel=False)
 if known:
-    out_pickle = file('RUNS/{:0}/KNOWN/{:0}_{:1]samples_0.pkl'.format(name, min_part), 'w')
+    out_pickle = file('RUNS/{0:}/KNOWN/{0:}_{1:]samples_0.pkl'.format(name, min_part), 'w')
 else:
-    out_pickle = file('RUNS/{:0}/SCIENCE/{:0}_{:1]samples_0.pkl'.format(name, min_part), 'w')
+    out_pickle = file('RUNS/{0:}/SCIENCE/{0:}_{1:]samples_0.pkl'.format(name, min_part), 'w')
 
 pickle.dump(OT, out_pickle)
 out_pickle.close()
@@ -49,9 +49,9 @@ for i in range(1, steps):
     OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
                         resume=PT, steps=1, parallel=False)
     if known:
-        out_pickle = file('RUNS/{:0}/KNOWN/{:0}_{:1]samples_{:2}.pkl'.format(name, min_part, i), 'w')
+        out_pickle = file('RUNS/{0:}/KNOWN/{0:}_{1:]samples_{2:}.pkl'.format(name, min_part, i), 'w')
     else:
-        out_pickle = file('RUNS/{:0}/SCIENCE/{:0}_{:1]samples_{:2}.pkl'.format(name, min_part, i), 'w')
+        out_pickle = file('RUNS/{:0}/SCIENCE/{0:}_{1:]samples_{2:}.pkl'.format(name, min_part, i), 'w')
     pickle.dump(OT, out_pickle)
     out_pickle.close()
 

@@ -46,5 +46,10 @@ print >> known_file, """python simpleplanets_kepler.py {:} {:} {:} {:} True
                    """.format(name, steps, eps, min_part)
 known_file.close()
 
+os.system('echo "steps = {1:}, epsilon = {2:}, samples = {3:}" > RUNS/{0:}/{0:}_log.txt'.format(name,
+                                                                      steps,
+                                                                      eps,
+                                                                      min_part))
+
 os.system("qsub {:}".format(known))
 os.system("qsub {:}".format(science))
