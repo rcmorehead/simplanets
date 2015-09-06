@@ -7,10 +7,17 @@ import time
 import sys
 
 name = sys.argv[1]
-steps = sys.argv[2]
-eps = sys.argv[3]
-min_part = sys.argv[4]
+steps = int(sys.argv[2])
+eps = float(sys.argv[3])
+min_part = int(sys.argv[4])
 known = sys.argv[5]
+print known, type(known)
+
+if known == "True":
+    known = True
+else:
+    known = False
+print known, type(known)
 
 stars = pickle.load(file('stars.pkl'))
 
