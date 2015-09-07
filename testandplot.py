@@ -5,10 +5,11 @@ from scipy import stats
 import numpy as np
 import triangle
 from matplotlib.backends.backend_pdf import PdfPages
+import simple_model
 
 
 def lookatresults(data, name):
-    plots, thetas = [], []
+    plots, thetas, modes = [], [], []
     P = data[-1][0]
     for i in xrange(len(P)):
         x = P[i]
@@ -16,6 +17,9 @@ def lookatresults(data, name):
             stats.mstats.mode(x)[0][0]-stats.scoreatpercentile(x, 16),
             stats.mstats.mode(x)[0][0],
             stats.scoreatpercentile(x, 84)-stats.mstats.mode(x)[0][0], i+1)
+
+        modes.append(stats.mstats.mode(x)[0][0])
+
         thetas.append(r'$\theta_{}$'.format(i+1))
         f = plt.figure()
         plt.suptitle(name)
@@ -51,18 +55,44 @@ def lookatresults(data, name):
     #plt.savefig('trianle.png'.format(i))
     plots.append(f)
 
-    return plots
+    return plots, modes
 
-def plot_modes(data):
-    pass
+def plot_modes(obs, modes):
+        stars = pickle.load(file('stars.pkl'))
+        model = simple_model.MyModel(stars)
+
+        synth = model.generate_data(modes)
+        synth_stats = model.summary_stats(synth)
+        obs_stats = model.summary_stats(obs)
+
+
+        f = plt.figure()
+        plt.subplot(121)
+        plt.hist(obs_stats[0], histtype='step', label='Data')
+        plt.hist(synth_stats[0], histtype='step', label='Simulation')
+        plt.xlabel(r'$\xi$')
+        plt.legend()
+
+        plt.subplot(122)
+        plt.hist(obs_stats[1], histtype='step', label='Data', log=True)
+        plt.hist(synth_stats[1], histtype='step', label='Simulation', log=True)
+        plt.xlabel(r'$N_p$')
+        plt.legend()
+
+        return [f]
+
+
 
 
 def main():
     data = pickle.load(file(sys.argv[1]))
     obs = pickle.load(file("/".join(sys.argv[1].split('/')[:-1] +
                             ['obs_data.pkl'])))
-    results = lookatresults(data, sys.argv[1])
 
+
+    results, modes = lookatresults(data, sys.argv[1])
+
+    results = results + plot_modes(obs, modes)
 
     report_plot = PdfPages(sys.argv[1].replace('.pkl', '_testplots.pdf'))
 

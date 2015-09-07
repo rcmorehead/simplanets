@@ -10,6 +10,7 @@ import time
 from scipy import stats
 
 
+
 def main():
     #TODO Choose new random seed after testing
     np.random.seed(917)
