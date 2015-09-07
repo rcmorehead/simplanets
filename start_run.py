@@ -1,4 +1,5 @@
 import os
+import sys
 
 print "*** Simple Planets - As easy as ABC! ***"
 name = str(raw_input('Enter run name: '))
@@ -53,7 +54,9 @@ os.system('echo "steps = {1:}, epsilon = {2:}, samples = {3:}" > RUNS/{0:}/{0:}_
 os.system(' git status -u none >> RUNS/{0:}/{0:}_log.txt'.format(name))
 os.system(' git rev-parse HEAD >> RUNS/{0:}/{0:}_log.txt'.format(name))
 
-os.system("qsub {:}".format(known))
-os.system("qsub {:}".format(science))
-#os.system("python simpleplanets_kepler.py {:} {:} {:} {:} False".format(name, steps, eps, min_part))
-#os.system("python simpleplanets_kepler.py {:} {:} {:} {:} True".format(name, steps, eps, min_part))
+if len(sys.argv) > 1 and sys.argv[1] == 'local':
+    os.system("python simpleplanets_kepler.py {:} {:} {:} {:} False".format(name, steps, eps, min_part))
+    os.system("python simpleplanets_kepler.py {:} {:} {:} {:} True".format(name, steps, eps, min_part))
+else:
+    os.system("qsub {:}".format(known))
+    os.system("qsub {:}".format(science))

@@ -34,6 +34,8 @@ else:
     print obs[0:3]
 
 
+
+
 model.set_prior([stats.uniform(0, 90.0),
                  stats.uniform(0, 1),
                  stats.uniform(0, 20)])
@@ -44,9 +46,18 @@ start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
                         steps=1, parallel=False)
 if known:
-    out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name, min_part), 'w')
+    out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name,
+                                                                min_part), 'w')
+    observed = file('RUNS/{0}/KNOWN/obs_data.pkl'.format(name), 'w')
+    pickle.dump(obs, observed)
+    observed.close()
+
 else:
-    out_pickle = file('RUNS/{0}/SCIENCE/{0}_{1}samples_0.pkl'.format(name, min_part), 'w')
+    out_pickle = file('RUNS/{0}/SCIENCE/{0}_{1}samples_0.pkl'.format(name,
+                                                                min_part), 'w')
+    observed = file('RUNS/{0}/SCIENCE/obs_data.pkl'.format(name), 'w')
+    pickle.dump(obs, observed)
+    observed.close()
 
 pickle.dump(OT, out_pickle)
 out_pickle.close()
