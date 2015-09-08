@@ -48,7 +48,7 @@ known_file = file(known, 'w')
 print >> known_file, pbs_head
 print >> known_file, """python simpleplanets_kepler.py {:} {:} {:} {:} True
                    """.format(name, steps, eps, min_part)
-print >> sci_file, """python testandplot.py RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl
+print >> known_file, """python testandplot.py RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl
                    """.format(name, min_part, steps-1)
 known_file.close()
 
