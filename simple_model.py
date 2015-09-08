@@ -3,6 +3,7 @@ from simpleabc.simple_abc import Model
 from scipy import stats
 import numpy as np
 import simple_lib
+from  kports.KeplerPORTs_utils import detection_efficiency as detect
 
 class MyModel(Model):
 
@@ -88,7 +89,9 @@ class MyModel(Model):
 
         # #Strip nans from T  (planets in giant stars)
         catalog = np.extract((~np.isnan(catalog['snr'])
-                              == True) & (catalog['snr'] > 10.0), catalog)
+                              == True), catalog)
+        rand_detect = stats.uniform.rvs(size=catalog.size)
+        catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
         return catalog
 

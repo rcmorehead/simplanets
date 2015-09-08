@@ -62,6 +62,9 @@ os.system(' git rev-parse HEAD >> RUNS/{0:}/{0:}_log.txt'.format(name))
 if len(sys.argv) > 1 and sys.argv[1] == 'local':
     os.system("python simpleplanets_kepler.py {:} {:} {:} {:} False".format(name, steps, eps, min_part))
     os.system("python simpleplanets_kepler.py {:} {:} {:} {:} True".format(name, steps, eps, min_part))
+    os.system("python testandplot.py RUNS/{0}/SCIENCE/{0}_{1}samples_{2}.pkl".format(name, min_part, steps-1))
+    os.system("python testandplot.py RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl".format(name, min_part, steps-1))
+
 else:
     os.system("qsub {:}".format(known))
     os.system("qsub {:}".format(science))
