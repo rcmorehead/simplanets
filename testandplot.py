@@ -77,7 +77,7 @@ def plot_modes(obs, modes, stars, model):
 
 
         f = plt.figure()
-        ptl.rc('legend', fontsize='xx-small', frameon=False)
+        plt.rc('legend', fontsize='xx-small', frameon=False)
         plt.subplot(121)
         bins = opt_bin(obs_stats[0],synth_stats[0])
         plt.hist(obs_stats[0], bins=bins, histtype='step', label='Data')
