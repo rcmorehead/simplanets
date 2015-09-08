@@ -76,8 +76,9 @@ def lookatresults(data, name):
 
     return plots, modes
 
-def plot_modes(obs, modes, stars, model):
+def plot_modes(obs, modes, stars, model, data):
 
+        plots = []
         synth = model.generate_data(modes)
         synth_stats = model.summary_stats(synth)
         obs_stats = model.summary_stats(obs)
@@ -86,6 +87,7 @@ def plot_modes(obs, modes, stars, model):
 
 
         f = plt.figure()
+        plt.suptitle('Obs Cand.:{}; Sim Cand.:{}'.format(obs.size, synth.size))
         plt.rc('legend', fontsize='xx-small', frameon=False)
         plt.subplot(121)
         bins = opt_bin(obs_stats[0],synth_stats[0])
@@ -105,7 +107,64 @@ def plot_modes(obs, modes, stars, model):
         plt.xlabel(r'$N_p$')
         plt.legend()
 
-        return [f]
+        plots.append(f)
+
+        f = plt.figure()
+        plt.suptitle('Normalized Planet Counts')
+        plt.subplot(121)
+        plt.hist(obs_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
+                                              1),
+                 histtype='step', label='Data', normed=True)
+        plt.hist(synth_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
+                                                1),
+                 histtype='step', label='Simulation', normed=True)
+        plt.xlabel(r'$N_p$')
+        plt.legend()
+
+
+        plt.subplot(122)
+        plt.hist(obs_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
+                                              1),
+                 histtype='step', label='Data', log=True, normed=True)
+        plt.hist(synth_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
+                                                1),
+                 histtype='step', label='Simulation', log=True, normed=True)
+        plt.xlabel(r'$N_p$')
+        plt.legend()
+
+        plots.append(f)
+
+        D = np.zeros(100)
+        for i in xrange(100):
+            S = model.generate_data(modes)
+            SS = model.summary_stats(S)
+            D[i] = model.distance_function(obs_stats, SS)
+
+        f = plt.figure()
+        bins = opt_bin(D, np.array(data[-1]['D accepted']))
+        plt.hist(D, bins=bins, histtype='step', label='Modes')
+        plt.hist(data[-1]['D accepted'], bins=bins,
+                     histtype='step', label='PMC')
+        plt.axvline(data[-1]['epsilon'], lw=3, label=r'$\epsilon$')
+        plt.legend()
+        plots.append(f)
+
+
+        for i in synth.dtype.names:
+            f = plt.figure()
+            bins = np.linspace(synth[i].min(), synth[i].max(),
+                            np.sqrt(synth[i].size))
+            plt.hist(synth[i], bins=bins, histtype='step', label='Sim')
+            plt.xlabel(i)
+            plt.title('min={:.4f}; max={:.4f}'.format(synth[i].min(),
+                                                      synth[i].max()))
+            if i in obs.dtype.names:
+                plt.hist(obs[i], bins=bins, histtype='step', label='Data')
+                plt.legend()
+            plots.append(f)
+
+
+        return plots
 
 
 
@@ -120,7 +179,7 @@ def main():
 
     results, modes = lookatresults(data, sys.argv[1])
 
-    results = results + plot_modes(obs, modes, stars, model)
+    results = results + plot_modes(obs, modes, stars, model, data)
 
     report_plot = PdfPages(sys.argv[1].replace('.pkl', '_testplots.pdf'))
 
