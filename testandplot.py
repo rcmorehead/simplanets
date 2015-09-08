@@ -44,6 +44,15 @@ def lookatresults(data, name):
         plots.append(f)
 
 
+    f = plt.figure()
+    plt.subplot(211)
+    plt.plot(data['epsilon'], 'o-')
+    plt.title(r'$\epsilon$')
+    plt.subplot(212)
+    plt.plot(data['n total'], 'o-')
+    plt.title('N Trials')
+    plots.append(f)
+
 
     alphas = np.linspace(0, 1, data.size)
 
@@ -87,9 +96,11 @@ def plot_modes(obs, modes, stars, model):
 
         plt.subplot(122)
         bins = opt_bin(obs_stats[1],synth_stats[1])
-        plt.hist(obs_stats[1], bins=np.arange(bins.min(), bins.max()+1, 1),
+        plt.hist(obs_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
+                                              1),
                  histtype='step', label='Data', log=True)
-        plt.hist(synth_stats[1], bins=np.arange(bins.min(), bins.max()+1, 1),
+        plt.hist(synth_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
+                                                1),
                  histtype='step', label='Simulation', log=True)
         plt.xlabel(r'$N_p$')
         plt.legend()
