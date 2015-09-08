@@ -39,12 +39,17 @@ sci_file = file(science, 'w')
 print >> sci_file, pbs_head
 print >> sci_file, """python simpleplanets_kepler.py {:} {:} {:} {:} False
                    """.format(name, steps, eps, min_part)
+print >> sci_file, """python testandplot.py RUNS/{0}/SCIENCE/{0}_{1}samples_{2}.pkl
+                   """.format(name, min_part, steps-1)
+
 sci_file.close()
 
 known_file = file(known, 'w')
 print >> known_file, pbs_head
 print >> known_file, """python simpleplanets_kepler.py {:} {:} {:} {:} True
                    """.format(name, steps, eps, min_part)
+print >> sci_file, """python testandplot.py RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl
+                   """.format(name, min_part, steps-1)
 known_file.close()
 
 os.system('echo "steps = {1:}, epsilon = {2:}, samples = {3:}" > RUNS/{0:}/{0:}_log.txt'.format(name,
