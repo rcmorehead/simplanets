@@ -77,6 +77,7 @@ def plot_modes(obs, modes, stars, model):
 
 
         f = plt.figure()
+        ptl.rc('legend', fontsize='xx-small', frameon=False)
         plt.subplot(121)
         bins = opt_bin(obs_stats[0],synth_stats[0])
         plt.hist(obs_stats[0], bins=bins, histtype='step', label='Data')
@@ -86,10 +87,10 @@ def plot_modes(obs, modes, stars, model):
 
         plt.subplot(122)
         bins = opt_bin(obs_stats[1],synth_stats[1])
-        plt.hist(obs_stats[1],  bins=bins, histtype='step', label='Data',
-                 log=True)
-        plt.hist(synth_stats[1], bins=bins, histtype='step', label='Simulation',
-                 log=True)
+        plt.hist(obs_stats[1], bins=np.arange(bins.min(), bins.max()+1, 1),
+                 histtype='step', label='Data', log=True)
+        plt.hist(synth_stats[1], bins=np.arange(bins.min(), bins.max()+1, 1),
+                 histtype='step', label='Simulation', log=True)
         plt.xlabel(r'$N_p$')
         plt.legend()
 
