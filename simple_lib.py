@@ -8,7 +8,7 @@ r_earth_r_sun = 0.009155
 day_hrs = 24.0
 
 
-#@profile
+@profile
 def impact_parameter(a, e, i, w, r_star):
     """
     Compute the impact parameter at for a transiting planet.
@@ -55,7 +55,7 @@ def impact_parameter(a, e, i, w, r_star):
               (1 - e**2) / (1 + e * np.sin(np.radians(w))))
 
 
-#@profile
+@profile
 def inclination(fund_plane, mutual_inc, node):
     """
     Compute the inclination of a planet.
@@ -106,7 +106,7 @@ def inclination(fund_plane, mutual_inc, node):
                       np.sin(fund_plane) * np.sin(mutual_inc) * np.cos(node)))
 
 
-#@profile
+@profile
 def semimajor_axis(period, mass):
     """
     Compute the semimajor axis of an object.
@@ -137,7 +137,7 @@ def semimajor_axis(period, mass):
     return (((2.959E-4*mass)/(4*np.pi**2))*period**2.0) ** (1.0/3.0)
 
 
-#@profile
+@profile
 def transit_depth(r_star, r_planet):
     """
     One-line description
@@ -158,7 +158,7 @@ def transit_depth(r_star, r_planet):
     return ((r_planet * r_earth_r_sun)/r_star)**2 * 1e6
 
 
-#@profile
+@profile
 def transit_duration(p, a, e, i, w, b, r_star, r_planet):
     """
     Compute the full (Q1-Q4) transit duration.
@@ -216,7 +216,7 @@ def transit_duration(p, a, e, i, w, b, r_star, r_planet):
     return duration
 
 
-#@profile
+@profile
 def snr(catalog):
     """
     Calculate Signal to Noise ratio for a planet transit
@@ -241,7 +241,7 @@ def snr(catalog):
                                                         catalog['T']/6.0)
 
 
-#@profile
+@profile
 def xi(catalog):
     """
     One-line description
@@ -279,7 +279,7 @@ def xi(catalog):
     return logxi, xi_fraction
 
 
-#@profile
+@profile
 def multi_count(catalog, stars):
     """
     One-line description
@@ -306,7 +306,7 @@ def multi_count(catalog, stars):
     return count
 
 
-#@profile
+@profile
 def multies_only(catalog):
 
     unq, unq_idx, unq_cnt = np.unique(catalog['ktc_kepler_id'],
@@ -318,7 +318,7 @@ def multies_only(catalog):
     return catalog[idx_mask]
 
 
-#@profile
+@profile
 def normed_duration(catalog):
     """
     One-line description
