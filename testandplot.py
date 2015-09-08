@@ -8,6 +8,16 @@ from matplotlib.backends.backend_pdf import PdfPages
 import simple_model
 
 
+def opt_bin(A,B):
+
+    bounds = [A.min(), B.min(), A.max(), B.max()]
+    bounds.sort()
+    sizes = [np.sqrt(A.size), np.sqrt(B.size)]
+    sizes.sort()
+
+    return np.linspace(bounds[0], bounds[3], sizes[1])
+
+
 def lookatresults(data, name):
     plots, thetas, modes = [], [], []
     P = data[-1][0]
@@ -57,25 +67,29 @@ def lookatresults(data, name):
 
     return plots, modes
 
-def plot_modes(obs, modes):
-        stars = pickle.load(file('stars.pkl'))
-        model = simple_model.MyModel(stars)
+def plot_modes(obs, modes, stars, model):
 
         synth = model.generate_data(modes)
         synth_stats = model.summary_stats(synth)
         obs_stats = model.summary_stats(obs)
 
 
+
+
         f = plt.figure()
         plt.subplot(121)
-        plt.hist(obs_stats[0], histtype='step', label='Data')
-        plt.hist(synth_stats[0], histtype='step', label='Simulation')
+        bins = opt_bin(obs_stats[0],synth_stats[0])
+        plt.hist(obs_stats[0], bins=bins, histtype='step', label='Data')
+        plt.hist(synth_stats[0], bins=bins, histtype='step', label='Simulation')
         plt.xlabel(r'$\xi$')
         plt.legend()
 
         plt.subplot(122)
-        plt.hist(obs_stats[1], histtype='step', label='Data', log=True)
-        plt.hist(synth_stats[1], histtype='step', label='Simulation', log=True)
+        bins = opt_bin(obs_stats[1],synth_stats[1])
+        plt.hist(obs_stats[1],  bins=bins, histtype='step', label='Data',
+                 log=True)
+        plt.hist(synth_stats[1], bins=bins, histtype='step', label='Simulation',
+                 log=True)
         plt.xlabel(r'$N_p$')
         plt.legend()
 
@@ -89,10 +103,12 @@ def main():
     obs = pickle.load(file("/".join(sys.argv[1].split('/')[:-1] +
                             ['obs_data.pkl'])))
 
+    stars = pickle.load(file('stars.pkl'))
+    model = simple_model.MyModel(stars)
 
     results, modes = lookatresults(data, sys.argv[1])
 
-    results = results + plot_modes(obs, modes)
+    results = results + plot_modes(obs, modes, stars, model)
 
     report_plot = PdfPages(sys.argv[1].replace('.pkl', '_testplots.pdf'))
 
