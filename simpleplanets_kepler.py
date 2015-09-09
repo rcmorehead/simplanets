@@ -31,6 +31,7 @@ else:
     obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
     obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
     obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
+    obs = obs[(obs['period'] >= 10.0) & (obs['period'] <= 320.0)]
     print obs[0:3]
 
 
