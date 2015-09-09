@@ -19,8 +19,8 @@ os.makedirs('RUNS/{:}/SCIENCE'.format(name))
 pbs_head = '''
 #!/bin/bash
 #
-#PBS -N drow
-#PBS -M rcm242@psu.edu
+#PBS -N {:}
+#PBS -M abc-sim@psu.edu
 #PBS -m abe
 #PBS -A ebf11_collab
 #PBS -l pmem=4gb
@@ -30,7 +30,7 @@ pbs_head = '''
 #PBS -e runs/
 #PBS -j oe
 #
-cd $PBS_O_WORKDIR'''
+cd $PBS_O_WORKDIR'''.format(name)
 
 science = 'pbs_scripts/{:}_science.pbs'.format(name)
 known = 'pbs_scripts/{:}_known.pbs'.format(name)
