@@ -153,7 +153,8 @@ class MyModel(Model):
 
     #@profile
     def planet_period(self, size):
-        return 10**stats.uniform.rvs(0, 3, size=size)
+        #log uniform 10 - 320 days ala christensen
+        return 10**stats.uniform.rvs(1, 2.5051499783199058, size=size)
 
     #@profile
     def fundamental_node(self, size):

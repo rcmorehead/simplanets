@@ -24,13 +24,14 @@ stars = pickle.load(file('stars.pkl'))
 model = simple_model.MyModel(stars)
 
 if known:
-    theta_0 = (2.0, 0.05, 5)
+    theta_0 = (2.0, 0.1, 9)
     obs = model.generate_data(theta_0)
     print obs[0:3]
 else:
     obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
     obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
     obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
+    obs = obs[(obs['period'] >= 10.0) & (obs['period'] <= 320.0)]
     print obs[0:3]
 
 
