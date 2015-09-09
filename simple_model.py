@@ -58,6 +58,9 @@ class MyModel(Model):
 
         # print catalog.dtype.names
 
+        catalog = catalog[(catalog['period'] >= 10.0) &
+                          (catalog['period'] <= 320.0)]
+
         catalog['fund_plane'] = self.fundamental_plane(catalog)
         #Compute derived parameters.
         catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
