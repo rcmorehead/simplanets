@@ -36,9 +36,9 @@ else:
 
 
 
-model.set_prior([stats.uniform(0, 90.0),
-                 stats.uniform(0, 1),
-                 stats.uniform(0, 20)])
+model.set_prior([stats.truncnorm((0-45)/10., (90-45)/10., loc=45, scale=10),
+                 stats.truncnorm((0-.5)/.1, (1-.5)/.1, loc=.5, scale=.1),
+                stats.truncnorm((0-5)/3., (20-5)/3., loc=5, scale=3)])
 
 model.set_data(obs)
 
