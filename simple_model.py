@@ -132,21 +132,26 @@ class MyModel(Model):
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
-        
+        N = self.stars['ktc_kepler_id'].size
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
 
         #Histogram distance for count
+
         max1 = summary_stats[1].max()
         max2 = summary_stats_synth[1].max()
 
         maxbin = int(max(max1, max2))
-        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
-        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
+        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1) )
+        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1) )
 
-        d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
+        p = np.zeros(maxbin)
+        for i in xrange(maxbin):
+            p[i] = 1 - stats.binom_test(h1[0][i], N, h2[0][i]/N)
+
+        d = np.sqrt(np.sum(p**2) + d1**2)
 
         return d
 
