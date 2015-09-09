@@ -69,6 +69,9 @@ class MyModel(Model):
 
 
 
+        catalog = catalog[(catalog['period'] >= 10.0) &
+                          (catalog['period'] <= 320.0)]
+
         catalog['fund_plane'] = self.fundamental_plane(catalog)
         #Compute derived parameters.
 
