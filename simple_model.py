@@ -136,7 +136,7 @@ class MyModel(Model):
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
-        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
+        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]*50
 
         #Histogram distance for count
 
