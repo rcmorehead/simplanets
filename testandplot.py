@@ -8,7 +8,7 @@ import numpy as np
 import triangle
 from matplotlib.backends.backend_pdf import PdfPages
 import simple_model
-
+from scipy.optimize import minimize
 
 def opt_bin(A,B):
 
@@ -19,18 +19,22 @@ def opt_bin(A,B):
 
     return np.linspace(bounds[0], bounds[3], sizes[1])
 
+def neg(x, function=None):
+    return -function(x)
 
-def lookatresults(data, name):
-    plots, thetas, modes = [], [], []
+
+def lookatresults(data, name, modes):
+    plots, thetas = [], []
     P = data[-1][0]
+
     for i in xrange(len(P)):
         x = P[i]
         theta = r'$\theta_{3:}$ {1:.2f} +{2:.2f}/-{0:.2f}'.format(
-            stats.mstats.mode(x)[0][0]-stats.scoreatpercentile(x, 16),
-            stats.mstats.mode(x)[0][0],
-            stats.scoreatpercentile(x, 84)-stats.mstats.mode(x)[0][0], i+1)
+            modes[i]-stats.scoreatpercentile(x, 16),
+            modes[i],
+            stats.scoreatpercentile(x, 84)-modes[i], i+1)
 
-        modes.append(stats.mstats.mode(x)[0][0])
+
 
         thetas.append(r'$\theta_{}$'.format(i+1))
         f = plt.figure()
@@ -76,7 +80,7 @@ def lookatresults(data, name):
     #plt.savefig('trianle.png'.format(i))
     plots.append(f)
 
-    return plots, modes
+    return plots
 
 def plot_modes(obs, modes, stars, model, data):
 
@@ -161,8 +165,9 @@ def plot_modes(obs, modes, stars, model, data):
             plt.title('min={:.4f}; max={:.4f}'.format(synth[i].min(),
                                                       synth[i].max()))
             if i in obs.dtype.names:
-                plt.hist(obs[i], bins=bins, histtype='step', label='Data')
-                plt.legend()
+                pass
+                #plt.hist(obs[i], bins=bins, histtype='step', label='Data')
+                #plt.legend()
             plots.append(f)
 
 
@@ -179,7 +184,12 @@ def main():
     stars = pickle.load(file('stars.pkl'))
     model = simple_model.MyModel(stars)
 
-    results, modes = lookatresults(data, sys.argv[1])
+    f = stats.gaussian_kde(data[-1][0])
+    int_guess = np.mean(data[-1][0], axis=1)
+
+    modes = minimize(neg, int_guess, args=(f)).x
+
+    results = lookatresults(data, sys.argv[1], modes)
 
     results = results + plot_modes(obs, modes, stars, model, data)
 
