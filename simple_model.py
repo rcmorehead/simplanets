@@ -135,8 +135,21 @@ class MyModel(Model):
         N = self.stars['ktc_kepler_id'].size
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
-        #KS Distance for xi
-        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]*50
+        #Binom for xi
+        BINS = np.zeros(15)
+        BINS[0:2] = np.array([-2.0, -1.0])
+        BINS[2:-2] = np.linspace(-.5, .5, 11)
+        BINS[-2:] = np.array([1.0, 2.0])
+
+        xh1 = np.histogram(summary_stats[0], bins=BINS)
+        xh2 = np.histogram(summary_stats_synth[0], bins=BINS)
+
+        d1 = np.zeros(xh1[0].size)
+        for i in xrange(d1.size):
+            d1[i] = 1 - stats.binom_test(xh1[0][i], summary_stats[0].size,
+                                         xh2[0][i]/summary_stats_synth[0].size)
+
+        #d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]*50
 
         #Histogram distance for count
 
@@ -151,7 +164,7 @@ class MyModel(Model):
         for i in xrange(maxbin):
             p[i] = 1 - stats.binom_test(h1[0][i], N, h2[0][i]/N)
 
-        d = np.sqrt(np.sum(p**2) + d1**2)
+        d = np.sqrt(np.sum(p**2) + np.sum(d1**2))
 
         return d
 
