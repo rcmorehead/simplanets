@@ -136,8 +136,8 @@ class MyModel(Model):
         d1 = simple_lib.anderson_ksamp([summary_stats[0],
                                    summary_stats_synth[0]])[0]
 
-        d2 = simple_lib.anderson_ksamp(summary_stats[1],
-                                          summary_stats_synth[1])[0]
+        d2 = simple_lib.anderson_ksamp([summary_stats[1],
+                                          summary_stats_synth[1]])[0]
 
         d = np.sqrt(d1**2 + d2**2)
 
