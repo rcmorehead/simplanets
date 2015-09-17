@@ -24,7 +24,7 @@ stars = pickle.load(file('stars.pkl'))
 model = simple_model.MyModel(stars)
 
 if known:
-    theta_0 = (2.0, 0.05, 5)
+    theta_0 = (10, 0.1, 10)
     obs = model.generate_data(theta_0)
     print obs[0:3]
 else:
