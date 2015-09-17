@@ -133,7 +133,7 @@ class MyModel(Model):
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
-        d1 = 0.0 - np.log(stats.anderson_ksamp([summary_stats[0],
+        d1 = 0.0 - np.log(simple_lib.anderson_ksamp([summary_stats[0],
                                    summary_stats_synth[0]])[2])
 
         d2 = 0.0 - np.log(stats.mannwhitneyu(summary_stats[1],
