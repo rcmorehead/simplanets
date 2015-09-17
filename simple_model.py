@@ -136,7 +136,8 @@ class MyModel(Model):
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
-        d1 = 1 - stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[1]
+        d1 = np.log(1) - np.log(stats.ks_2samp(summary_stats[0],
+                                               summary_stats_synth[0])[1])
 
         #Histogram distance for count
 
@@ -149,7 +150,8 @@ class MyModel(Model):
 
         p = np.zeros(maxbin)
         for i in xrange(maxbin):
-            p[i] = 1 - stats.binom_test(h1[0][i], N, h2[0][i]/N)
+            p[i] = np.log(1) - np.log(stats.binom_test(h1[0][i],
+                                                      N, h2[0][i]/N))
 
         d = np.sqrt(np.sum(p**2) + d1**2)
 
