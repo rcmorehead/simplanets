@@ -133,17 +133,13 @@ class MyModel(Model):
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
-        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
+        d1 = 0.0 - np.log(stats.anderson_ksamp([summary_stats[0],
+                                   summary_stats_synth[0]])[2])
 
-        #Histogram distance for count
-        max1 = summary_stats[1].max()
-        max2 = summary_stats_synth[1].max()
+        d2 = 0.0 - np.log(stats.mannwhitneyu(summary_stats[1],
+                                          summary_stats_synth[1]))
 
-        maxbin = int(max(max1, max2))
-        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
-        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
-
-        d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
+        d = np.sqrt(d1**2 + d2**2)
 
         return d
 
