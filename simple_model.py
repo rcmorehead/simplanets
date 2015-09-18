@@ -53,10 +53,13 @@ class MyModel(Model):
         catalog['e'] = self.eccentricity(theta[1], total_planets)
         catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
+        catalog['planet_mass'] = simple_lib.mass_calc(catalog['planet_radius'])
+
         for h in star_header:
             catalog[h] = np.repeat(self.stars[h], planet_numbers)
 
         # print catalog.dtype.names
+
 
         catalog['fund_plane'] = self.fundamental_plane(catalog)
         #Compute derived parameters.

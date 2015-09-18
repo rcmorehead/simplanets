@@ -2,6 +2,7 @@
 Useful classes and functions for SIMPLE.
 """
 import numpy as np
+from scipy import stats
 import warnings
 r_sun_au = 0.004649
 r_earth_r_sun = 0.009155
@@ -338,3 +339,15 @@ def normed_duration(catalog):
     """
 
     return (catalog['T']/day_hrs)/(catalog['period'])**(1/3.0)
+
+def mass_calc(radius):
+    '''
+    calc mass using wolfgang 2015 R < 4, or lissaur 2011 when R > 4
+
+    :param radius: array of radii in earth radius
+    :return: array of mass in earth mass
+
+    '''
+    return np.where(radius <= 4.0,
+                    np.random.normal(loc=2.7*radius**1.3, scale=1.9),
+                    radius**2.06)
