@@ -351,3 +351,33 @@ def mass_calc(radius):
     return np.where(radius <= 4.0,
                     np.random.normal(loc=2.7*radius**1.3, scale=1.9),
                     radius**2.06)
+
+#@profile
+def phys_reject(catalog):
+    """
+    One-line description
+
+    Full description
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+
+    """
+    catalog.sort(order=['ktc_kepler_id', 'period'])
+
+    id = np.roll(catalog['ktc_kepler_id'], 1)
+
+    idx = np.where(catalog['ktc_kepler_id'] == id)
+
+    print catalog['ktc_kepler_id']
+    print id
+    print idx
+
+    return
