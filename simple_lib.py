@@ -297,13 +297,13 @@ def multi_count(catalog, stars):
 
 
     """
-    count = np.zeros(stars['ktc_kepler_id'].size)
+    #count = np.zeros(stars['ktc_kepler_id'].size)
 
     bincount = np.bincount(catalog['ktc_kepler_id'])
     bincount = bincount[bincount > 0]
-    count[:bincount.size] = bincount
+    #count[:bincount.size] = bincount
 
-    return count
+    return bincount
 
 
 #@profile
