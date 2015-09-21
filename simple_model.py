@@ -153,7 +153,7 @@ class MyModel(Model):
         h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
         h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
 
-        d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
+        d = np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
 
         return d
 
@@ -178,7 +178,7 @@ class MyModel(Model):
                     semi = simple_lib.semimajor_axis(period,
                                 catalog['planet_mass'][cat_dex:cat_dex+n])
                     ap = semi * (1 + catalog['e'][cat_dex:cat_dex+n])
-                    peri semi * (1 - catalog['e'][cat_dex:cat_dex+n])
+                    peri = semi * (1 - catalog['e'][cat_dex:cat_dex+n])
 
 
                     good = True
