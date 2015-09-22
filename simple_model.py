@@ -143,9 +143,9 @@ class MyModel(Model):
         h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
         h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
 
-        d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
+        d2 =  simple_lib.g_test(h1[0], h2[0])
 
-        return d
+        return np.sqrt(d1**2 + d2**2)
 
     #@profile
     def planets_per_system(self, Lambda, size):

@@ -2,6 +2,9 @@
 Useful classes and functions for SIMPLE.
 """
 import numpy as np
+from scipy import stats
+from scipy import integrate
+
 import warnings
 r_sun_au = 0.004649
 r_earth_r_sun = 0.009155
@@ -338,3 +341,30 @@ def normed_duration(catalog):
     """
 
     return (catalog['T']/day_hrs)/(catalog['period'])**(1/3.0)
+
+
+#def _kull_lei(x, P, Q):
+#   return P(x) * (np.log(P(x)) - np.log(Q(x)))
+
+#def kullback_leibler(O,E, discrete=False):
+    # '''
+    # If discrete, then O,E should be in frequencies/probabilities
+    #
+    # :param O:
+    # :param E:
+    # :param discrete:
+    # :return:
+    # '''
+    #
+    # if discrete == True:
+    #     return sum(O * (np.log(O) - np.log(E)))
+    # else:
+    #     P = stats.gaussian_kde(O)
+    #     Q = stats.gaussian_kde(E)
+    #     return integrate.quad(_kull_lei, -np.inf, np.inf, args=(P, Q))
+    #
+
+def g_test(O, E):
+    E = E[np.where(O > 0)]
+    O = O[np.where(O > 0)]
+    return 2 * sum(O * (np.log(O) - np.log(E)))
