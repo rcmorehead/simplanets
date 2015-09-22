@@ -364,6 +364,7 @@ def normed_duration(catalog):
     #     return integrate.quad(_kull_lei, -np.inf, np.inf, args=(P, Q))
     #
 
+#@profile
 def g_test(O, E):
     E = E[np.where(O > 0)]
     O = O[np.where(O > 0)]
