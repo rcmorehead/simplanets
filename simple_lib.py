@@ -366,6 +366,5 @@ def normed_duration(catalog):
 
 #@profile
 def g_test(O, E):
-    E = E[np.where(O > 0)]
-    O = O[np.where(O > 0)]
-    return 2 * sum(O * (np.log(O) - np.log(E)))
+    dex = np.where((O > 0) & (E > 0))
+    return 2 * sum(O[dex] * (np.log(O[dex]) - np.log(E[dex])))
