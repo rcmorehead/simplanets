@@ -48,29 +48,28 @@ class MyModel(Model):
             catalog[h] = np.repeat(self.stars[h], planet_numbers)
 
         catalog['e'] = self.eccentricity(theta[1], total_planets)
-        catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
         catalog['planet_mass'] = simple_lib.mass_calc(catalog['planet_radius'])
+        catalog['period'] = self.planet_period(total_planets)
+        catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
+                                                catalog['mass'])
 
-        catalog['period'] = np.zeros(total_planets)
-        catalog['a'] = np.zeros(total_planets)
-
-
-        self.phys_period(catalog, planet_numbers)
-
-
-        catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
-
-        catalog['fund_node'] = self.fundamental_node(total_planets)
-
-        #catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
-        #                                        catalog['mass'])
-
-
-
+        #catalog = self.phys_reject_redraw(catalog)
 
         catalog = catalog[(catalog['period'] >= 10.0) &
                           (catalog['period'] <= 320.0)]
+
+
+        catalog['w'] = self.longitude_ascending_node(catalog.shape[0])
+        catalog['mi'] = self.mutual_inclination(theta[0], catalog.shape[0])
+        catalog['fund_node'] = self.fundamental_node(catalog.shape[0])
+
+
+
+
+
+
+
 
         catalog['fund_plane'] = self.fundamental_plane(catalog)
         #Compute derived parameters.
@@ -168,29 +167,16 @@ class MyModel(Model):
     def planet_period(self, size):
         return 10**stats.uniform.rvs(0, 3, size=size)
 
-    def phys_period(self, catalog, planet_numbers):
-        period_draws = self.planet_period(catalog.size*2)
-        cat_dex = 0
-        per_dex = 0
-        for i,n in enumerate(planet_numbers):
-            if n > 0:
-                good = False
-                while good == False:
-                    period = period_draws[per_dex:per_dex+n]
-                    per_dex += n
-                    semi = simple_lib.semimajor_axis(period,
-                                catalog['planet_mass'][cat_dex:cat_dex+n])
-                    ap = semi * (1 + catalog['e'][cat_dex:cat_dex+n])
-                    peri = semi * (1 - catalog['e'][cat_dex:cat_dex+n])
+    def phys_reject_redraw(self, catalog):
+        catalog.sort(order=['ktc_kepler_id', 'period'])
 
+        apoapsis = catalog['a'] * (1 + catalog['e'])
+        periapsis = catalog['a'] * (1 - catalog['e'])
+        overlap = np.where(
+            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+            np.roll(periapsis, -1) - apoapsis, 0)
 
-                    good = True
-
-
-
-                catalog['period'][cat_dex:cat_dex+n] = period
-                catalog['a'][cat_dex:cat_dex+n] = semi
-                cat_dex += n
+        print np.where(overlap < 0)[0].size
         return
 
     #@profile
