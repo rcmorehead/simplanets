@@ -176,7 +176,7 @@ class MyModel(Model):
             catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
             np.roll(periapsis, -1) - apoapsis, 0)
 
-        print np.where(overlap < 0)[0].size
+        #print np.where(overlap < 0)[0].size
         return
 
     #@profile
