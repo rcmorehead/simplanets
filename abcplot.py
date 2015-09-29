@@ -56,8 +56,14 @@ def opt_bin(A,B):
 
     return np.linspace(bounds[0], bounds[3], sizes[1])
 
-def lookatresults(data, modes, theta=None):
+def lookatresults(data, modes, theta=None, vert=False):
 
+    if vert == True:
+        subplots = [311, 312, 313]
+        figsize = (3,15)
+    else:
+        subplots = [131, 132, 133]
+        figsize = (15, 3)
 
     f = stats.gaussian_kde(data[-1][0])
     int_guess = np.mean(data[-1][0], axis=1)
@@ -79,8 +85,8 @@ def lookatresults(data, modes, theta=None):
         bins = np.sqrt(P.shape[1])
     else:
         bins=10
-    plt.figure(figsize=(15,3))
-    plt.subplot(131)
+    fig = plt.figure(figsize=figsize)
+    plt.subplot(subplots[0])
     plt.title(thetas[0])
     ker = stats.gaussian_kde(P[0])
     plt.hist(P[0], bins=bins, normed=True, alpha=0.2)
@@ -90,7 +96,7 @@ def lookatresults(data, modes, theta=None):
     if theta != None:
         plt.axvline(theta[0])
 
-    plt.subplot(132)
+    plt.subplot(subplots[1])
     plt.title(thetas[1])
     ker = stats.gaussian_kde(P[1])
     plt.hist(P[1], bins=bins, normed=True, alpha=0.2)
@@ -100,7 +106,7 @@ def lookatresults(data, modes, theta=None):
     if theta != None:
         plt.axvline(theta[1])
 
-    plt.subplot(133)
+    plt.subplot(subplots[2])
     plt.title(thetas[2])
     ker = stats.gaussian_kde(P[2])
     plt.hist(P[2], bins=bins, normed=True, alpha=0.2)
@@ -110,7 +116,7 @@ def lookatresults(data, modes, theta=None):
     if theta != None:
         plt.axvline(theta[2])
 
-
+    return fig
 
 
 def sim_results(obs, modes, stars, model, data):
