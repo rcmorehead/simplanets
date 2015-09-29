@@ -60,7 +60,7 @@ def lookatresults(data, modes, theta=None, vert=False):
 
     if vert == True:
         subplots = [311, 312, 313]
-        figsize = (3,15)
+        figsize = (6,18)
     else:
         subplots = [131, 132, 133]
         figsize = (15, 3)
