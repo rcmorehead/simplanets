@@ -53,7 +53,8 @@ class MyModel(Model):
         catalog['period'] = self.planet_period(total_planets)
         catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
                                                 catalog['mass'])
-
+        if True:
+            return catalog
         #catalog = self.phys_reject_redraw(catalog)
 
         catalog = catalog[(catalog['period'] >= 10.0) &
@@ -168,16 +169,39 @@ class MyModel(Model):
         return 10**stats.uniform.rvs(0, 3, size=size)
 
     def phys_reject_redraw(self, catalog):
+        earth_mass = 3.003467e-6
         catalog.sort(order=['ktc_kepler_id', 'period'])
 
         apoapsis = catalog['a'] * (1 + catalog['e'])
         periapsis = catalog['a'] * (1 - catalog['e'])
         overlap = np.where(
             catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-            np.roll(periapsis, -1) - apoapsis, 0)
+            np.roll(periapsis, -1) - apoapsis, np.nan)
 
-        #print np.where(overlap < 0)[0].size
-        return
+
+        hill_rad = np.where(
+            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+                   ((catalog['planet_mass']+np.roll(catalog['planet_mass'], -1))
+                    * earth_mass / 3 * catalog['mass']) ** (1.0/3.0)
+                    * (catalog['a'] + np.roll(catalog['a'], -1))/2.0, np.nan
+                    )
+        delta = np.where(
+            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+            (np.roll(catalog['a'], -1) - catalog['a'])/hill_rad,
+            0)
+
+        delta_sum = np.where(
+            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+            delta + np.roll(delta,-1) , np.nan)
+
+        reject = np.where(
+            (hill_rad != np.nan) &
+            (overlap < 0) &
+            (delta < 2 * np.sqrt(3)) &
+            (delta_sum < 18), True, False
+        )
+
+        return [apoapsis, periapsis, overlap, hill_rad, delta, delta_sum, reject]
 
     #@profile
     def fundamental_node(self, size):
