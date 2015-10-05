@@ -262,9 +262,9 @@ def xi(catalog):
     catalog.sort(order=['ktc_kepler_id', 'period'])
     p_in = np.roll(catalog['period'], 1)
     t_in = np.roll(catalog['T'], 1)
-    id = np.roll(catalog['ktc_kepler_id'], 1)
+    kic_id = np.roll(catalog['ktc_kepler_id'], 1)
 
-    idx = np.where(catalog['ktc_kepler_id'] == id)
+    idx = np.where(catalog['ktc_kepler_id'] == kic_id)
 
     P_ratio = catalog['period'][idx]/p_in[idx]
     D_ratio = t_in[idx]/catalog['T'][idx]
