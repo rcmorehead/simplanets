@@ -6,7 +6,7 @@ from scipy import stats
 import pylab as plt
 import sys
 
-N = 10
+N = 1000
 
 stars = pickle.load(file('stars.pkl'))
 model = simple_model.MyModel(stars)
