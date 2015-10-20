@@ -174,25 +174,47 @@ class MyModel(Model):
 
         apoapsis = catalog['a'] * (1 + catalog['e'])
         periapsis = catalog['a'] * (1 - catalog['e'])
-        overlap = np.where(
-            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-            np.roll(periapsis, -1) - apoapsis, np.nan)
+
+        dex =np.where(
+            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'],
+                                                -1))[0]
+
+        overlap = np.empty_like(catalog['period']) * np.nan
+        hill_rad = np.empty_like(catalog['period']) * np.nan
+        delta = np.zeros_like(catalog['period'])
+        delta_sum = np.empty_like(catalog['period']) * np.nan
+
+        overlap[dex] = periapsis[dex + 1] - apoapsis[dex]
+
+       #overlap = np.where(
+       #     catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+       #     np.roll(periapsis, -1) - apoapsis, np.nan)
 
 
-        hill_rad = np.where(
-            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-                   ((catalog['planet_mass']+np.roll(catalog['planet_mass'], -1))
-                    * earth_mass / 3 * catalog['mass']) ** (1.0/3.0)
-                    * (catalog['a'] + np.roll(catalog['a'], -1))/2.0, np.nan
-                    )
-        delta = np.where(
-            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-            (np.roll(catalog['a'], -1) - catalog['a'])/hill_rad,
-            0)
+        #hill_rad = np.where(
+        #    catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+        #           ((catalog['planet_mass']+np.roll(catalog['planet_mass'], -1))
+        #            * earth_mass / 3 * catalog['mass']) ** (1.0/3.0)
+        #            * (catalog['a'] + np.roll(catalog['a'], -1))/2.0, np.nan
+        #            )
 
-        delta_sum = np.where(
-            catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-            delta + np.roll(delta,-1) , np.nan)
+        hill_rad[dex] = (
+            ((catalog['planet_mass'][dex] + catalog['planet_mass'][dex +1 ])
+            * earth_mass / 3 * catalog['mass'][dex]) ** (1.0/3.0)
+            * (catalog['a'][dex] + catalog['a'][dex + 1])/2.0)
+
+        delta[dex] = (catalog['a'][dex + 1] - catalog['a'][dex])/hill_rad[dex]
+
+        #delta = np.where(
+        #    catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+        #    (np.roll(catalog['a'], -1) - catalog['a'])/hill_rad,
+        #    0)
+
+       # delta_sum = np.where(
+       #     catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
+       #     delta + np.roll(delta,-1) , np.nan)
+
+        delta_sum[dex] = delta[dex] + delta[dex+1]
 
         reject = np.where(
             (hill_rad != np.nan) &
