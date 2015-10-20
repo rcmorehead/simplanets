@@ -168,7 +168,7 @@ class MyModel(Model):
     def planet_period(self, size):
         return 10**stats.uniform.rvs(0, 3, size=size)
 
-    def phys_reject_redraw(self, catalog):
+    def phys_reject(self, catalog):
         earth_mass = 3.003467e-6
         catalog.sort(order=['ktc_kepler_id', 'period'])
 
@@ -186,18 +186,6 @@ class MyModel(Model):
 
         overlap[dex] = periapsis[dex + 1] - apoapsis[dex]
 
-       #overlap = np.where(
-       #     catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-       #     np.roll(periapsis, -1) - apoapsis, np.nan)
-
-
-        #hill_rad = np.where(
-        #    catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-        #           ((catalog['planet_mass']+np.roll(catalog['planet_mass'], -1))
-        #            * earth_mass / 3 * catalog['mass']) ** (1.0/3.0)
-        #            * (catalog['a'] + np.roll(catalog['a'], -1))/2.0, np.nan
-        #            )
-
         hill_rad[dex] = (
             ((catalog['planet_mass'][dex] + catalog['planet_mass'][dex +1 ])
             * earth_mass / 3 * catalog['mass'][dex]) ** (1.0/3.0)
@@ -205,25 +193,40 @@ class MyModel(Model):
 
         delta[dex] = (catalog['a'][dex + 1] - catalog['a'][dex])/hill_rad[dex]
 
-        #delta = np.where(
-        #    catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-        #    (np.roll(catalog['a'], -1) - catalog['a'])/hill_rad,
-        #    0)
-
-       # delta_sum = np.where(
-       #     catalog['ktc_kepler_id'] == np.roll(catalog['ktc_kepler_id'], -1),
-       #     delta + np.roll(delta,-1) , np.nan)
-
         delta_sum[dex] = delta[dex] + delta[dex+1]
 
         reject = np.where(
+            (catalog['planet_mass'] <= 0) |
             (hill_rad != np.nan) &
             (overlap < 0) &
             (delta < 2 * np.sqrt(3)) &
-            (delta_sum < 18), True, False
-        )
+            (delta_sum < 18), True, False)
 
-        return [apoapsis, periapsis, overlap, hill_rad, delta, delta_sum, reject]
+        return reject
+
+    def phys_redraw(self, catalog, reject, theta):
+        n = np.count_nonzero(reject)
+        catalog['e'][reject] = self.eccentricity(theta[1], n)
+        catalog['planet_radius'][reject] = self.planet_radius(n)
+        catalog['planet_mass'][reject] = simple_lib.mass_calc(
+                                            catalog['planet_radius'][reject])
+        catalog['period'][reject] = self.planet_period(n)
+        catalog['a'][reject] = simple_lib.semimajor_axis(
+                                                    catalog['period'][reject],
+                                                    catalog['mass'][reject])
+        return catalog
+
+    def phys_reject_redraw(self, catalog, theta, limit=10):
+
+        reject = self.phys_reject(catalog)
+        count = 1
+        while count < limit:
+            self.phys_redraw(catalog, reject, theta)
+            reject = self.phys_reject(catalog)
+            count += 1
+            print np.count_nonzero(reject), np.count_nonzero(reject)/float(catalog.size)
+
+        return catalog
 
     #@profile
     def fundamental_node(self, size):
