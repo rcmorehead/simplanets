@@ -16,6 +16,21 @@ class MyModel(Model):
         #self.data = data
         #self.data_sum_stats = self.summary_stats(self.data)
 
+    #functions for pickling
+    def __getstate__(self):
+        result = self.__dict__.copy()
+        result['prior'] = [p.kwds for p in self.prior]
+        return result
+
+
+    def __setstate__(self, state):
+        np.random.seed()
+        self.__dict__ = state
+        new_prior = [stats.uniform(**state['prior'][0]),
+                     stats.uniform(**state['prior'][1]),
+                     stats.uniform(**state['prior'][2])]
+        self.__dict__['prior'] = new_prior
+
     #@profile
     def draw_theta(self):
         theta = []
@@ -143,8 +158,10 @@ class MyModel(Model):
         max2 = summary_stats_synth[1].max()
 
         maxbin = int(max(max1, max2))
-        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1), density=True)
-        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1), density=True)
+        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
+                          density=True)
+        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
+                          density=True)
 
         d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
 
@@ -185,4 +202,3 @@ class MyModel(Model):
     def planet_radius(self, size):
         return (10**stats.uniform.rvs(np.log10(1.0), np.log10(19.0),
                 size=size))
-

@@ -28,7 +28,8 @@ if known:
     obs = model.generate_data(theta_0)
     print obs[0:3]
 else:
-    obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),delimiter=",")
+    obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),
+                        delimiter=",")
     obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
     obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
     obs = obs[(obs['period'] >= 10.0) & (obs['period'] <= 320.0)]
@@ -45,7 +46,7 @@ model.set_data(obs)
 
 start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        steps=1, parallel=False)
+                        steps=1, parallel=True)
 if known:
     out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name,
                                                                 min_part), 'w')
@@ -66,13 +67,18 @@ out_pickle.close()
 for i in range(1, steps):
     PT = OT
     OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        resume=PT, steps=1, parallel=False)
+                        resume=PT, steps=1, parallel=True)
     if known:
-        out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, i), 'w')
+        out_pickle = file(
+            'RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, i),
+            'w')
     else:
-        out_pickle = file('RUNS/{0}/SCIENCE/{0}_{1}samples_{2}.pkl'.format(name, min_part, i), 'w')
+        out_pickle = file(
+            'RUNS/{0}/SCIENCE/{0}_{1}samples_{2}.pkl'.format(name, min_part, i),
+            'w')
+
     pickle.dump(OT, out_pickle)
     out_pickle.close()
 
 end = time.time()
-print 'Serial took {}s'.format(end - start)
+print 'This run took {}s'.format(end - start)

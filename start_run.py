@@ -24,7 +24,7 @@ pbs_head = '''
 #PBS -m abe
 #PBS -A ebf11_collab
 #PBS -l pmem=4gb
-#PBS -l nodes=1:ppn=1
+#PBS -l nodes=1:ppn=8
 #PBS -l walltime=048:00:00
 #PBS -o runs/
 #PBS -e runs/
