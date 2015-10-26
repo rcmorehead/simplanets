@@ -224,8 +224,10 @@ class MyModel(Model):
             self.phys_redraw(catalog, reject, theta)
             reject = self.phys_reject(catalog)
             count += 1
+            print ''
             print np.count_nonzero(reject), np.count_nonzero(reject)/float(catalog.size)
-
+            print 'e', stats.ks_2samp(catalog['e'], self.eccentricity(theta[1], catalog['e'].size))
+            print 'p', stats.ks_2samp(catalog['period'], self.planet_period(catalog['e'].size))
         return catalog
 
     #@profile
