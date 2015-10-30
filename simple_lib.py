@@ -348,9 +348,10 @@ def mass_calc(radius):
     :return: array of mass in earth mass
 
     '''
-    return np.where(radius <= 4.0,
-                    np.random.normal(loc=2.7*radius**1.3, scale=1.9),
-                    radius**2.06)
+    return np.where(radius <= 8.0,
+                    np.random.normal(loc=1.6*radius**1.8, scale=2.9),
+                    np.random.normal(loc=radius**2.06, scale=6.58))
+
 
 #@profile
 def phys_reject(catalog):

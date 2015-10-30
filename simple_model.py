@@ -53,9 +53,11 @@ class MyModel(Model):
         catalog['period'] = self.planet_period(total_planets)
         catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
                                                 catalog['mass'])
+        before = float(catalog.size)
+        catalog = self.phys_reject_redraw(catalog, theta)
+        print "\n{}".format(catalog.size/before)
         if True:
             return catalog
-        #catalog = self.phys_reject_redraw(catalog)
 
         catalog = catalog[(catalog['period'] >= 10.0) &
                           (catalog['period'] <= 320.0)]
@@ -142,7 +144,7 @@ class MyModel(Model):
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
-        
+
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
@@ -202,6 +204,9 @@ class MyModel(Model):
             (delta < 2 * np.sqrt(3)) &
             (delta_sum < 18), True, False)
 
+        reject_id = np.unique(catalog['ktc_kepler_id'][reject])
+        reject = np.in1d(catalog['ktc_kepler_id'], reject_id)
+
         return reject
 
     def phys_redraw(self, catalog, reject, theta):
@@ -216,7 +221,7 @@ class MyModel(Model):
                                                     catalog['mass'][reject])
         return catalog
 
-    def phys_reject_redraw(self, catalog, theta, limit=10):
+    def phys_reject_redraw(self, catalog, theta, limit=20):
 
         reject = self.phys_reject(catalog)
         count = 1
@@ -224,10 +229,13 @@ class MyModel(Model):
             self.phys_redraw(catalog, reject, theta)
             reject = self.phys_reject(catalog)
             count += 1
-            print ''
-            print np.count_nonzero(reject), np.count_nonzero(reject)/float(catalog.size)
-            print 'e', stats.ks_2samp(catalog['e'], self.eccentricity(theta[1], catalog['e'].size))
-            print 'p', stats.ks_2samp(catalog['period'], self.planet_period(catalog['e'].size))
+            print count
+
+        if count >= limit:
+            print 'here!'
+            reject = self.phys_reject(catalog)
+            catalog = catalog[~reject]
+
         return catalog
 
     #@profile
@@ -257,4 +265,3 @@ class MyModel(Model):
     def planet_radius(self, size):
         return (10**stats.uniform.rvs(np.log10(1.0), np.log10(19.0),
                 size=size))
-
