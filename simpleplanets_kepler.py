@@ -48,7 +48,7 @@ model.set_data(obs)
 
 start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        steps=1, parallel=True, n_procs=8)
+                        steps=1, parallel=True, n_procs='all')
 if known:
     out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name,
                                                                 min_part), 'w')
@@ -69,7 +69,7 @@ out_pickle.close()
 for i in range(1, steps):
     PT = OT
     OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        resume=PT, steps=1, parallel=True, n_procs=8)
+                        resume=PT, steps=1, parallel=True, n_procs='all')
     if known:
         out_pickle = file(
             'RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, i),
