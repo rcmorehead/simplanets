@@ -199,15 +199,18 @@ class MyModel(Model):
 
         reject = np.where(
             (catalog['planet_mass'] <= 0) |
-            (hill_rad != np.nan) &
-            (overlap < 0) &
-            (delta < 2 * np.sqrt(3)) &
-            (delta_sum < 18), True, False)
+            (catalog['e'] >= 1) |
+            ((np.isnan(hill_rad) == False) &
+            ((overlap < 0) |
+            (delta < 2 * np.sqrt(3)) |
+            (delta_sum < 18))), True, False)
+
+        reject1 = reject
 
         reject_id = np.unique(catalog['ktc_kepler_id'][reject])
         reject = np.in1d(catalog['ktc_kepler_id'], reject_id)
 
-        return reject
+        return reject#, apoapsis, periapsis, overlap, hill_rad, delta, delta_sum, reject1
 
     def phys_redraw(self, catalog, reject, theta):
         n = np.count_nonzero(reject)
@@ -225,16 +228,19 @@ class MyModel(Model):
 
         reject = self.phys_reject(catalog)
         count = 1
-        while count < limit:
+        accept_fraction = 0
+        while accept_fraction < .9:
             self.phys_redraw(catalog, reject, theta)
             reject = self.phys_reject(catalog)
             count += 1
-            print count
+            accept_fraction = (float(reject.size-reject.sum())
+                                /float(reject.size))
+            print count, accept_fraction
 
-        if count >= limit:
-            print 'here!'
-            reject = self.phys_reject(catalog)
-            catalog = catalog[~reject]
+        #if count >= limit:
+            #print 'here!'
+            #reject = self.phys_reject(catalog)
+        catalog = catalog[~reject]
 
         return catalog
 
