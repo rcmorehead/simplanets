@@ -107,8 +107,8 @@ class MyModel(Model):
         catalog['snr'] = simple_lib.snr(catalog)
 
         # #Strip nans from T  (planets in giant stars)
-        #catalog = np.extract((~np.isnan(catalog['snr'])
-        #                      == True), catalog)
+        catalog = np.extract((~np.isnan(catalog['snr'])
+                              == True), catalog)
         rand_detect = stats.uniform.rvs(size=catalog.size)
         catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
