@@ -90,8 +90,7 @@ class MyModel(Model):
                                                    catalog['radius'])
 
         #Strip non-transiting planets/ unbound
-        catalog = np.extract((catalog['b'] < 1.0) & (catalog['e'] <= 1.0),
-                             catalog)
+        catalog = np.extract((catalog['b'] < 1.0), catalog)
 
         catalog['T'] = simple_lib.transit_duration(catalog['period'],
                                                    catalog['a'], catalog['e'],
@@ -147,7 +146,7 @@ class MyModel(Model):
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
-        
+
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
@@ -192,7 +191,8 @@ class MyModel(Model):
 
     #@profile
     def eccentricity(self, scale, size):
-        return stats.rayleigh.rvs(scale=scale, size=size)
+        edraw = stats.rayleigh.rvs(scale=scale, size=size)
+        return np.where(edraw >= 1, 0.99, edraw)
 
     #@profile
     def longitude_ascending_node(self, size):
