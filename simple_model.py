@@ -17,12 +17,13 @@ class MyModel(Model):
         #self.data_sum_stats = self.summary_stats(self.data)
 
     #functions for pickling
+    #@profile
     def __getstate__(self):
         result = self.__dict__.copy()
         result['prior'] = [p.kwds for p in self.prior]
         return result
 
-
+    #@profile
     def __setstate__(self, state):
         np.random.seed()
         self.__dict__ = state
@@ -59,7 +60,8 @@ class MyModel(Model):
                                                         total_planets)
 
 
-
+        fund_plane_draw = self.fundamental_plane(self.stars.size)
+        catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
         catalog['period'] = self.planet_period(total_planets)
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
@@ -76,7 +78,7 @@ class MyModel(Model):
         catalog = catalog[(catalog['period'] >= 10.0) &
                           (catalog['period'] <= 320.0)]
 
-        catalog['fund_plane'] = self.fundamental_plane(catalog)
+
         #Compute derived parameters.
         catalog['a'] = simple_lib.semimajor_axis(catalog['period'],
                                                  catalog['mass'])
@@ -90,8 +92,7 @@ class MyModel(Model):
                                                    catalog['radius'])
 
         #Strip non-transiting planets/ unbound
-        catalog = np.extract((catalog['b'] < 1.0) & (catalog['e'] <= 1.0),
-                             catalog)
+        catalog = np.extract((catalog['b'] < 1.0), catalog)
 
         catalog['T'] = simple_lib.transit_duration(catalog['period'],
                                                    catalog['a'], catalog['e'],
@@ -106,8 +107,8 @@ class MyModel(Model):
         catalog['snr'] = simple_lib.snr(catalog)
 
         # #Strip nans from T  (planets in giant stars)
-        catalog = np.extract((~np.isnan(catalog['snr'])
-                              == True), catalog)
+        #catalog = np.extract((~np.isnan(catalog['snr'])
+        #                      == True), catalog)
         rand_detect = stats.uniform.rvs(size=catalog.size)
         catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
@@ -147,7 +148,7 @@ class MyModel(Model):
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
-        
+
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
@@ -180,11 +181,9 @@ class MyModel(Model):
         return stats.uniform.rvs(0, 360, size=size)
 
     #@profile
-    def fundamental_plane(self, catalog):
-        draws = np.degrees(np.arccos(2*stats.uniform.rvs(0, 1,
-                         size=np.arange(0, catalog['ktc_kepler_id'].max() + 1,
-                                        1).size) -1 ))
-        return draws[catalog['ktc_kepler_id']]
+    def fundamental_plane(self, size):
+        return np.degrees(np.arccos(2*stats.uniform.rvs(0, 1,
+                         size=size) -1 ))
 
     #@profile
     def mutual_inclination(self, scale, size):
@@ -192,7 +191,8 @@ class MyModel(Model):
 
     #@profile
     def eccentricity(self, scale, size):
-        return stats.rayleigh.rvs(scale=scale, size=size)
+        edraw = stats.rayleigh.rvs(scale=scale, size=size)
+        return np.where(edraw >= 1.0, 0.99, edraw)
 
     #@profile
     def longitude_ascending_node(self, size):
