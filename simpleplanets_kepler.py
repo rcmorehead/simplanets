@@ -28,11 +28,13 @@ if known:
     obs = model.generate_data(theta_0)
     print obs[0:3]
 else:
-    obs = np.recfromcsv('04012015_trimmed.csv',usecols=(1,4,14,32),
-                        delimiter=",")
+    obs = np.recfromcsv('q1_q17_dr24_koi_mcmc_only.csv',
+                        usecols=(1,4,14,32,48), delimiter=",")
     obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
-    obs.dtype.names = 'ktc_kepler_id','koi_disposition','period', 'T'
-    obs = obs[(obs['period'] >= 10.0) & (obs['period'] <= 320.0)]
+    obs.dtype.names = ('ktc_kepler_id','koi_disposition','period',
+                       'T', 'koi_prad')
+    obs = obs[(obs['period'] >= 10.0) & (obs['period'] <= 320.0) &
+                (obs['koi_prad'] <=20.0)]
     print obs[0:3]
 
 
@@ -46,7 +48,7 @@ model.set_data(obs)
 
 start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        steps=1, parallel=True, n_procs=8)
+                        steps=1, parallel=True, n_procs='all')
 if known:
     out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name,
                                                                 min_part), 'w')
@@ -67,7 +69,7 @@ out_pickle.close()
 for i in range(1, steps):
     PT = OT
     OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        resume=PT, steps=1, parallel=True, n_procs=8)
+                        resume=PT, steps=1, parallel=True, n_procs='all')
     if known:
         out_pickle = file(
             'RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, i),
