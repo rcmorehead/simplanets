@@ -18,7 +18,7 @@ model.set_prior([stats.uniform(0, 90.0),
                  stats.uniform(0, 20),
                   stats.uniform(0, 1)])
 
-theta_0 = (10, 0.1, 10)
+theta_0 = (10, 0.1, 10, 0.5)
 obs = model.generate_data(theta_0)
 
 model.set_data(obs)
