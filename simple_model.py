@@ -29,7 +29,8 @@ class MyModel(Model):
         self.__dict__ = state
         new_prior = [stats.uniform(**state['prior'][0]),
                      stats.uniform(**state['prior'][1]),
-                     stats.uniform(**state['prior'][2])]
+                     stats.uniform(**state['prior'][2]),
+                     stats.uniform(**state['prior'][3])]
         self.__dict__['prior'] = new_prior
 
     #@profile
@@ -43,8 +44,8 @@ class MyModel(Model):
     def generate_data(self, theta):
 
         #Draw the random model parameters.
-        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or
-            theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20):
+        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or theta[3] < 0 or
+            theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20 or theta[3] > 1):
 
             #planet_numbers = np.ones(1)
             #total_planets = planet_numbers.sum()
@@ -53,14 +54,17 @@ class MyModel(Model):
             return np.array([])
 
         else:
+            select_stars = np.random.choice(stars,
+                size=int(np.around(theta[3]*stars.size)), replace=False)
+
             planet_numbers = (self.planets_per_system(theta[2],
-                          self.stars['ktc_kepler_id'].size))
+                          select_stars['ktc_kepler_id'].size))
             total_planets = planet_numbers.sum()
             catalog, star_header, planet_header = self.init_catalog(
                                                         total_planets)
 
 
-        fund_plane_draw = self.fundamental_plane(self.stars.size)
+        fund_plane_draw = self.fundamental_plane(select_stars.size)
         catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
         catalog['period'] = self.planet_period(total_planets)
@@ -71,7 +75,7 @@ class MyModel(Model):
         catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
         for h in star_header:
-            catalog[h] = np.repeat(self.stars[h], planet_numbers)
+            catalog[h] = np.repeat(select_stars[h], planet_numbers)
 
         # print catalog.dtype.names
 
