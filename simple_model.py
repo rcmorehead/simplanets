@@ -54,8 +54,8 @@ class MyModel(Model):
             return np.array([])
 
         else:
-            select_stars = np.random.choice(stars,
-                size=int(np.around(theta[3]*stars.size)), replace=False)
+            select_stars = np.random.choice(self.stars,
+                size=int(np.around(theta[3]*self.stars.size)), replace=False)
 
             planet_numbers = (self.planets_per_system(theta[2],
                           select_stars['ktc_kepler_id'].size))
@@ -113,10 +113,12 @@ class MyModel(Model):
         # #Strip nans from T  (planets in giant stars)
         #catalog = np.extract((~np.isnan(catalog['snr'])
         #                      == True), catalog)
+
+
         rand_detect = stats.uniform.rvs(size=catalog.size)
         catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
-        return catalog
+        #return catalog
 
     #@profile
     def init_catalog(self, total_planets):
