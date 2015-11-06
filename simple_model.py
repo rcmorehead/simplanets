@@ -117,7 +117,7 @@ class MyModel(Model):
         rand_detect = stats.uniform.rvs(size=catalog.size)
         catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
-        #return catalog
+        return catalog
 
     #@profile
     def init_catalog(self, total_planets):
@@ -145,6 +145,7 @@ class MyModel(Model):
         #return (simple_lib.normed_duration(data), simple_lib.multi_count(data),
         #        simple_lib.xi(data)[1])
         #print data.dtype.names
+
         if data.size == 0:
             return False
         else:
