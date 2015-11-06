@@ -166,9 +166,9 @@ class MyModel(Model):
 
         #maxbin = int(max(max1, max2))
         #h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
-                          density=True)
+        #                  density=True)
         #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
-                          density=True)
+        #                  density=True)
 
         d =  np.sqrt(np.sum(d2**2 + d1**2)
 
