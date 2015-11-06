@@ -117,6 +117,7 @@ class MyModel(Model):
         rand_detect = stats.uniform.rvs(size=catalog.size)
         catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
+
         return catalog
 
     #@profile
@@ -149,8 +150,11 @@ class MyModel(Model):
         if data.size == 0:
             return False
         else:
+            multies = simple_lib.multi_count(data, self.stars)
+            h = np.histogram(multies, bins=multies.max() + 1)
+            multie_ratio = h[0][2:].sum()/float(h[0][1])
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    simple_lib.multi_count(data, self.stars))
+                    multies, multie_ratio)
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
@@ -160,17 +164,25 @@ class MyModel(Model):
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+<<<<<<< HEAD
+        d3 = np.abs(summary_stats_synth[2] - summary_stats[2])
+>>>>>>> master
         #Histogram distance for count
         #max1 = summary_stats[1].max()
         #max2 = summary_stats_synth[1].max()
 
+<<<<<<< HEAD
         #maxbin = int(max(max1, max2))
+>>>>>>> master
         #h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
         #                  density=True)
         #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
         #                  density=True)
 
+<<<<<<< HEAD
         d =  np.sqrt(np.sum(d2**2 + d1**2))
+        d =  np.sqrt(d1**2 + d2**2 + d3**2)
+>>>>>>> master
 
         return d
 
