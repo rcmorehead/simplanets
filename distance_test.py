@@ -1,4 +1,6 @@
 from simpleabc import simple_abc
+import matplotlib
+matplotlib.use('Agg')
 import simple_model
 import numpy as np
 import pickle
