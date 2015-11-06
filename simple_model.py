@@ -170,7 +170,7 @@ class MyModel(Model):
         #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
         #                  density=True)
 
-        d =  np.sqrt(np.sum(d2**2 + d1**2)
+        d =  np.sqrt(np.sum(d2**2 + d1**2))
 
         return d
 
