@@ -164,25 +164,25 @@ class MyModel(Model):
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-<<<<<<< HEAD
+
         d3 = np.abs(summary_stats_synth[2] - summary_stats[2])
->>>>>>> master
+
         #Histogram distance for count
         #max1 = summary_stats[1].max()
         #max2 = summary_stats_synth[1].max()
 
-<<<<<<< HEAD
+
         #maxbin = int(max(max1, max2))
->>>>>>> master
+
         #h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
         #                  density=True)
         #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
         #                  density=True)
 
-<<<<<<< HEAD
+
         d =  np.sqrt(np.sum(d2**2 + d1**2))
         d =  np.sqrt(d1**2 + d2**2 + d3**2)
->>>>>>> master
+
 
         return d
 

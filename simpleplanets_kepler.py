@@ -24,7 +24,7 @@ stars = pickle.load(file('stars.pkl'))
 model = simple_model.MyModel(stars)
 
 if known:
-    theta_0 = (10, 0.1, 10)
+    theta_0 = (10, 0.1, 10, 0.5)
     obs = model.generate_data(theta_0)
     print obs[0:3]
 else:
@@ -42,7 +42,8 @@ else:
 
 model.set_prior([stats.uniform(0, 90.0),
                  stats.uniform(0, 1),
-                 stats.uniform(0, 20)])
+                 stats.uniform(0, 20),
+                 stats.uniform(0, 1)])
 
 model.set_data(obs)
 
