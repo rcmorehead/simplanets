@@ -4,14 +4,12 @@ import sys
 print "*** Simple Planets - Distance Test ***"
 name = str(raw_input('Enter run name: '))
 
-print "Running distance test {:}.format(name)
-                                                                      steps,
-                                                                      eps,
+print "Running distance test {:}".format(name)
 
 pbs_head = '''
 #!/bin/bash
 #
-#PBS -N {:}
+#PBS -N {0:}
 #PBS -M abc-sim@psu.edu
 #PBS -m abe
 #PBS -A ebf11_collab
@@ -23,7 +21,7 @@ pbs_head = '''
 #PBS -j oe
 #
 cd $PBS_O_WORKDIR
-python distance_test.py {:}'''.format(name)
+python distance_test.py {0:}'''.format(name)
 
 science = 'dist_test.pbs'
 sci_file = file(science, 'w')
