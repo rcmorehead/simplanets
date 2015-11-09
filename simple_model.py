@@ -163,10 +163,15 @@ class MyModel(Model):
             return 1e9
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
+        #KS Distance for Multie Count
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-
+        #Ecluidian for single/multi ratio
         d3 = np.abs(summary_stats_synth[2] - summary_stats[2])
-
+        #Ecluidian for xi 10/90 precentiles
+        synth90, synth10 = np.percentile(summary_stats_synth[0], [90 ,10])
+        p90, p10 = np.percentile(summary_stats_synth[0], [90 ,10])
+        d4 = np.abs(synth90 - p90)
+        d5 = np.abs(synth10 - p10)
         #Histogram distance for count
         #max1 = summary_stats[1].max()
         #max2 = summary_stats_synth[1].max()
@@ -179,9 +184,7 @@ class MyModel(Model):
         #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
         #                  density=True)
 
-
-        d =  np.sqrt(np.sum(d2**2 + d1**2))
-        d =  np.sqrt(d1**2 + d2**2 + d3**2)
+        d =  np.sqrt(d1**2 + d2**2 + d3**2 + d4**2 + d5**2)
 
 
         return d
