@@ -168,8 +168,12 @@ class MyModel(Model):
         #Ecluidian for single/multi ratio
         d3 = np.abs(summary_stats_synth[2] - summary_stats[2])
         #Ecluidian for xi 10/90 precentiles
-        synth90, synth10 = np.percentile(summary_stats_synth[0], [90 ,10])
-        p90, p10 = np.percentile(summary_stats_synth[0], [90 ,10])
+        #Can have no multies and the edge of prior space
+        if summary_stats_synth[0].size == 0:
+            synth90, synth10 = 0,0
+        else:
+            synth90, synth10 = np.percentile(summary_stats_synth[0], [90 ,10])
+        p90, p10 = np.percentile(summary_stats[0], [90 ,10])
         d4 = np.abs(synth90 - p90)
         d5 = np.abs(synth10 - p10)
         #Histogram distance for count
