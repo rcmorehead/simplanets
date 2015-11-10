@@ -23,13 +23,14 @@ class MyModel(Model):
         result['prior'] = [p.kwds for p in self.prior]
         return result
 
-    #@profile
+       #@profile
     def __setstate__(self, state):
         np.random.seed()
         self.__dict__ = state
         new_prior = [stats.uniform(**state['prior'][0]),
                      stats.uniform(**state['prior'][1]),
-                     stats.uniform(**state['prior'][2])]
+                     stats.uniform(**state['prior'][2]),
+                     stats.uniform(**state['prior'][3])]
         self.__dict__['prior'] = new_prior
 
     #@profile
@@ -43,8 +44,8 @@ class MyModel(Model):
     def generate_data(self, theta):
 
         #Draw the random model parameters.
-        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or
-            theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20):
+        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or theta[3] < 0 or
+            theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20 or theta[3] > 1):
 
             #planet_numbers = np.ones(1)
             #total_planets = planet_numbers.sum()
