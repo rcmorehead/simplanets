@@ -112,6 +112,7 @@ class MyModel(Model):
         rand_detect = stats.uniform.rvs(size=catalog.size)
         catalog = catalog[ detect(catalog['snr'], 7.1, 2) >= rand_detect ]
 
+
         return catalog
 
     #@profile
@@ -143,8 +144,11 @@ class MyModel(Model):
         if data.size == 0:
             return False
         else:
+            multies = simple_lib.multi_count(data, self.stars)
+            h = np.histogram(multies, bins=multies.max() + 1)
+            multie_ratio = h[0][2:].sum()/float(h[0][1])
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    simple_lib.multi_count(data, self.stars))
+                    multies, multie_ratio)
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
@@ -153,18 +157,29 @@ class MyModel(Model):
             return 1e9
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
-
+        #KS Distance for Multie Count
+        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+        #Ecluidian for single/multi ratio
+        d3 = np.abs(summary_stats_synth[2] - summary_stats[2])
+        #Ecluidian for xi 10/90 precentiles
+        #Can have no multies and the edge of prior space
+        if summary_stats_synth[0].size == 0:
+            synth90, synth10 = 0,0
+        else:
+            synth90, synth10 = np.percentile(summary_stats_synth[0], [90 ,10])
+        p90, p10 = np.percentile(summary_stats[0], [90 ,10])
+        d4 = np.abs(synth90 - p90)
+        d5 = np.abs(synth10 - p10)
         #Histogram distance for count
-        max1 = summary_stats[1].max()
-        max2 = summary_stats_synth[1].max()
+        #max1 = summary_stats[1].max()
+        #max2 = summary_stats_synth[1].max()
 
-        maxbin = int(max(max1, max2))
-        h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
-                          density=True)
-        h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
-                          density=True)
+        #h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
+        #                  density=True)
+        #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
+        #                  density=True)
 
-        d =  np.sqrt(np.sum((h2[0]-h1[0])**2) + d1**2)
+        d =  np.sqrt(d1**2 + d2**2 + d3**2 + d4**2 + d5**2)
 
         return d
 

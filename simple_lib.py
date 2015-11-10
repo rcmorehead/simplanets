@@ -317,6 +317,27 @@ def multies_only(catalog):
     idx_mask = np.in1d(unq_idx, cnt_idx)
     return catalog[idx_mask]
 
+def duration_anomaly(catalog):
+    """
+    Returns T/T_nu where T is the transit duration and T_nu is the
+    duration for a e = 0, b = 0 transit.
+
+    Full description
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+    """
+    catalog['T_nu'] = (catalog['T'] /
+                        ((catalog['radius'] * r_sun_au * catalog['period'])
+                         /(np.pi * catalog['a']) * day_hrs))
+    return catalog
 
 #@profile
 def normed_duration(catalog):
