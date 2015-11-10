@@ -11,6 +11,7 @@ steps = int(sys.argv[2])
 eps = float(sys.argv[3])
 min_part = int(sys.argv[4])
 known = sys.argv[5]
+n_procs = sys.argv[6]
 #print known, type(known)
 
 if known == "True":
@@ -49,7 +50,7 @@ model.set_data(obs)
 
 start = time.time()
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        steps=1, parallel=True, n_procs='all')
+                        steps=1, parallel=True, n_procs=n_procs)
 if known:
     out_pickle = file('RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name,
                                                                 min_part), 'w')
@@ -70,7 +71,7 @@ out_pickle.close()
 for i in range(1, steps):
     PT = OT
     OT = simple_abc.pmc_abc(model, obs, epsilon_0=eps, min_samples=min_part,
-                        resume=PT, steps=1, parallel=True, n_procs='all')
+                        resume=PT, steps=1, parallel=True, n_procs=n_procs)
     if known:
         out_pickle = file(
             'RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, i),
