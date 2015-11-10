@@ -6,6 +6,7 @@ name = str(raw_input('Enter run name: '))
 steps = int(raw_input('Enter number of pmc steps: '))
 eps = float(raw_input('Enter initial tolerance size: '))
 min_part = int(raw_input('Enter sample size: '))
+n_procs = int(raw_input('Enter number of cores (max 20)'))
 
 print "Running {:}, steps = {:}, epsilon = {:}, samples = {:}".format(name,
                                                                       steps,
@@ -19,18 +20,18 @@ os.makedirs('RUNS/{:}/SCIENCE'.format(name))
 pbs_head = '''
 #!/bin/bash
 #
-#PBS -N {:}
+#PBS -N {0:}
 #PBS -M abc-sim@psu.edu
 #PBS -m abe
 #PBS -A ebf11_collab
 #PBS -l pmem=4gb
-#PBS -l nodes=1:ppn=8
+#PBS -l nodes=1:ppn={1:}
 #PBS -l walltime=048:00:00
 #PBS -o runs/
 #PBS -e runs/
 #PBS -j oe
 #
-cd $PBS_O_WORKDIR'''.format(name)
+cd $PBS_O_WORKDIR'''.format(name, n_procs)
 
 science = 'pbs_scripts/{:}_science.pbs'.format(name)
 known = 'pbs_scripts/{:}_known.pbs'.format(name)
