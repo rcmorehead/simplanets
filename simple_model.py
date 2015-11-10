@@ -45,7 +45,7 @@ class MyModel(Model):
 
         #Draw the random model parameters.
         if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or theta[3] < 0 or
-            theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20 or theta[3] > 1):
+            theta[0] > 90.0 or theta[1] > 10 or theta[2] > 20 or theta[3] > 1):
 
             #planet_numbers = np.ones(1)
             #total_planets = planet_numbers.sum()
@@ -68,7 +68,7 @@ class MyModel(Model):
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
 
         catalog['fund_node'] = self.fundamental_node(total_planets)
-        catalog['e'] = self.eccentricity(theta[1], total_planets)
+        catalog['e'] = self.eccentricity(theta[1] * np.radians(theta[0]), total_planets)
         catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
         for h in star_header:
