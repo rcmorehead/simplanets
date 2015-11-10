@@ -10,8 +10,9 @@ name = sys.argv[1]
 steps = int(sys.argv[2])
 eps = float(sys.argv[3])
 min_part = int(sys.argv[4])
-known = sys.argv[5]
-n_procs = sys.argv[6]
+n_procs = int(sys.argv[5])
+known = sys.argv[6]
+
 #print known, type(known)
 
 if known == "True":
