@@ -59,4 +59,13 @@ for i in xrange(thetas.shape[0]):
     plt.ylabel('Distance')
     report_plot.savefig(f)
 
+for i in xrange(thetas.shape[0]):
+    f = plt.figure()
+    plt.semilogy(thetas[i], distances, 'o')
+    plt.subplots_adjust(hspace=.45)
+    plt.axvline(theta_0[i], color='gray')
+    plt.xlabel(r'$\theta_{}$'.format(i+1))
+    plt.ylabel('Distance')
+    report_plot.savefig(f)
+
 report_plot.close()

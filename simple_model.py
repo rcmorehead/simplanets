@@ -153,8 +153,9 @@ class MyModel(Model):
             multies = simple_lib.multi_count(data, self.stars)
             h = np.histogram(multies, bins=multies.max() + 1)
             multie_ratio = h[0][2:].sum()/float(h[0][1])
+            n_planets = h[0].sum()
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    multies, multie_ratio)
+                    multies, multie_ratio, n_planets)
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
@@ -174,8 +175,9 @@ class MyModel(Model):
         else:
             synth90, synth10 = np.percentile(summary_stats_synth[0], [90 ,10])
         p90, p10 = np.percentile(summary_stats[0], [90 ,10])
-        d4 = np.abs(synth90 - p90)
-        d5 = np.abs(synth10 - p10)
+        d4 = np.abs(synth90 - p90)/p90
+        d5 = np.abs(synth10 - p10)/p10
+        d6 = (summary_stats_synth[3] - summary_stats[3])/float(summary_stats[3])
         #Histogram distance for count
         #max1 = summary_stats[1].max()
         #max2 = summary_stats_synth[1].max()
@@ -188,7 +190,7 @@ class MyModel(Model):
         #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
         #                  density=True)
 
-        d =  np.sqrt(d1**2 + d2**2 + d3**2 + d4**2 + d5**2)
+        d =  np.sqrt(d1**2 + d2**2 + d3**2 + d4**2 + d5**2 + d6**2)
 
 
         return d
