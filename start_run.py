@@ -24,14 +24,14 @@ pbs_head = '''
 #PBS -M abc-sim@psu.edu
 #PBS -m abe
 #PBS -A ebf11_collab
-#PBS -l pmem={1:}gb
+#PBS -l pmem={2:}gb
 #PBS -l nodes=1:ppn={1:}
 #PBS -l walltime=048:00:00
 #PBS -o runs/
 #PBS -e runs/
 #PBS -j oe
 #
-cd $PBS_O_WORKDIR'''.format(name, n_procs)
+cd $PBS_O_WORKDIR'''.format(name, n_procs, n_procs*2)
 
 science = 'pbs_scripts/{:}_science.pbs'.format(name)
 known = 'pbs_scripts/{:}_known.pbs'.format(name)
