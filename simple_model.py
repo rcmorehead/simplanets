@@ -54,8 +54,8 @@ class MyModel(Model):
             return np.array([])
 
         else:
-            select_stars = np.random.choice(stars,
-                        size=int(np.around(theta[3]*stars.size)), replace=False)
+            select_stars = np.random.choice(self.stars,
+                size=int(np.around(theta[3]*self.stars.size)), replace=False)
 
             planet_numbers = (self.planets_per_system(theta[2],
                           self.select_stars['ktc_kepler_id'].size))
