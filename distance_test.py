@@ -22,7 +22,7 @@ model.set_prior([stats.uniform(prior_bounds[0][0],prior_bounds[0][1]),
                  stats.uniform(prior_bounds[2][0],prior_bounds[2][1]),
                   stats.uniform(prior_bounds[3][0],prior_bounds[3][1])])
 
-theta_0 = [10, 0.1, 10, 0.5]
+theta_0 = (10, 0.1, 10, 0.5)
 obs = model.generate_data(theta_0)
 
 model.set_data(obs)
@@ -42,7 +42,7 @@ for n in xrange(N):
     distances.append(distance)
 
 for i in xrange(len(model.prior)):
-    T = theta_0 
+    T = list(theta_0) 
     Xs = np.linspace(prior_bounds[i][0]+0.0001,prior_bounds[i][1]-0.0001, 100)
     d = []
     for x in Xs:
