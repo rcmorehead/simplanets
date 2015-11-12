@@ -65,7 +65,6 @@ class MyModel(Model):
                                                         total_planets)
 
 
-
         fund_plane_draw = self.fundamental_plane(select_stars.size)
         catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
