@@ -54,25 +54,31 @@ class MyModel(Model):
             return np.array([])
 
         else:
+            select_stars = np.random.choice(stars,
+                        size=int(np.around(theta[3]*stars.size)), replace=False)
+
             planet_numbers = (self.planets_per_system(theta[2],
-                          self.stars['ktc_kepler_id'].size))
+                          self.select_stars['ktc_kepler_id'].size))
             total_planets = planet_numbers.sum()
             catalog, star_header, planet_header = self.init_catalog(
                                                         total_planets)
 
 
-        fund_plane_draw = self.fundamental_plane(self.stars.size)
+        fund_plane_draw = self.fundamental_plane(self.select_stars.size)
         catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
         catalog['period'] = self.planet_period(total_planets)
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
 
         catalog['fund_node'] = self.fundamental_node(total_planets)
-        catalog['e'] = self.eccentricity(theta[1] * np.radians(theta[0]), total_planets)
+
+        catalog['e'] = self.eccentricity(theta[1] * np.radians(theta[0]), 
+                                            total_planets)
+
         catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
         for h in star_header:
-            catalog[h] = np.repeat(self.stars[h], planet_numbers)
+            catalog[h] = np.repeat(self.select_stars[h], planet_numbers)
 
         # print catalog.dtype.names
 
