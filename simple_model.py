@@ -23,7 +23,7 @@ class MyModel(Model):
         result['prior'] = [p.kwds for p in self.prior]
         return result
 
-    #@profile
+       #@profile
     def __setstate__(self, state):
         np.random.seed()
         self.__dict__ = state
@@ -47,6 +47,7 @@ class MyModel(Model):
         if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or theta[3] < 0 or
             theta[0] > 90.0 or theta[1] > 1 or theta[2] > 20 or theta[3] > 1):
 
+
             #planet_numbers = np.ones(1)
             #total_planets = planet_numbers.sum()
             #catalog, star_header, planet_header = self.init_catalog(
@@ -64,6 +65,7 @@ class MyModel(Model):
                                                         total_planets)
 
 
+
         fund_plane_draw = self.fundamental_plane(select_stars.size)
         catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
@@ -71,11 +73,13 @@ class MyModel(Model):
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
 
         catalog['fund_node'] = self.fundamental_node(total_planets)
-        catalog['e'] = self.eccentricity(theta[1], total_planets)
+        catalog['e'] = self.eccentricity(theta[1] * np.radians(theta[0]), 
+                                            total_planets)
         catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
         for h in star_header:
             catalog[h] = np.repeat(select_stars[h], planet_numbers)
+
 
         # print catalog.dtype.names
 
