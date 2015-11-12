@@ -3,7 +3,8 @@ from simpleabc.simple_abc import Model
 from scipy import stats
 import numpy as np
 import simple_lib
-from  kports.KeplerPORTs_utils import detection_efficiency as detect
+from kports.KeplerPORTs_utils import detection_efficiency as detect
+
 
 class MyModel(Model):
 
@@ -156,7 +157,7 @@ class MyModel(Model):
             multies = simple_lib.multi_count(data, self.stars)
             h = np.histogram(multies, bins=multies.max() + 1)
             multie_ratio = h[0][2:].sum()/float(h[0][1])
-            n_planets = h[0].sum()
+            n_planets = h[0][1:].sum()
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
                     multies, multie_ratio, n_planets)
 
