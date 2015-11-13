@@ -73,8 +73,7 @@ class MyModel(Model):
         catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
 
         catalog['fund_node'] = self.fundamental_node(total_planets)
-        catalog['e'] = self.eccentricity(theta[1] * np.radians(theta[0]), 
-                                            total_planets)
+        catalog['e'] = self.eccentricity(theta[1], total_planets)
         catalog['w'] = self.longitude_ascending_node(total_planets)
         catalog['planet_radius'] = self.planet_radius(total_planets)
         for h in star_header:
