@@ -155,9 +155,8 @@ class MyModel(Model):
             multies = simple_lib.multi_count(data, self.stars)
             h = np.histogram(multies, bins=multies.max() + 1)
             multie_ratio = h[0][2:].sum()/float(h[0][1])
-            n_planets = h[0][1:].sum()
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    multies, multie_ratio, n_planets)
+                    multies, multie_ratio, data.size)
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
