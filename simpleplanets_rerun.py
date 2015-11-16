@@ -35,7 +35,8 @@ else:
 
 model.set_prior([stats.uniform(0, 90.0),
                  stats.uniform(0, 1),
-                 stats.uniform(0, 20)])
+                 stats.uniform(0, 20),
+                 stats.uniform(0, 1)])
 
 model.set_data(obs)
 
