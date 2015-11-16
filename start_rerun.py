@@ -14,7 +14,7 @@ print "Rerunning {:}, steps = {:}".format(name, steps,)
 pbs_head = '''
 #!/bin/bash
 #
-#PBS -N {0:}
+#PBS -N {0:}_restart
 #PBS -M abc-sim@psu.edu
 #PBS -m abe
 #PBS -A ebf11_collab
