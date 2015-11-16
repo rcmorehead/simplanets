@@ -56,14 +56,23 @@ def opt_bin(A,B):
 
     return np.linspace(bounds[0], bounds[3], sizes[1])
 
-def lookatresults(data, modes, theta=None, vert=False):
+def lookatresults(data, modes, theta=None, vert=False, labels=None):
+
+
+    P = data[-1][0]
+    n = P.shape[0]
+
+    if labels == None:
+        labels = [""] * n
+    else:
+        pass 
 
     if vert == True:
-        subplots = [311, 312, 313]
-        figsize = (6, 9)
+        subplots = range(n*100+11,n*100+n+11,1)
+        figsize = (6, 3*n)
     else:
-        subplots = [131, 132, 133]
-        figsize = (15, 3)
+        subplots = range(100+n*10+1,100+n*10+1+n,1)
+        figsize = (5*n, 3)
 
     f = stats.gaussian_kde(data[-1][0])
     int_guess = np.mean(data[-1][0], axis=1)
@@ -71,9 +80,9 @@ def lookatresults(data, modes, theta=None, vert=False):
 
     thetas = []
     P = data[-1][0]
-    labelpad = 5
+    labelpad = 20
 
-    for i in xrange(len(P)):
+    for i in xrange(n):
         x = P[i]
         t = r'$\theta_{3:}$ {1:.2f} +{2:.2f}/-{0:.2f}'.format(
             modes[i]-stats.scoreatpercentile(x, 16),
@@ -87,35 +96,21 @@ def lookatresults(data, modes, theta=None, vert=False):
     else:
         bins=10
     fig = plt.figure(figsize=figsize)
-    plt.subplot(subplots[0])
-    #plt.title(thetas[0])
-    ker = stats.gaussian_kde(P[0])
-    plt.hist(P[0], bins=bins, normed=True, alpha=1)
-    x = np.linspace(0.0,90,1000)
-    plt.plot(x,ker(x))
-    plt.xlabel(r"$\sigma_{mi}$", labelpad=labelpad)
-    if theta != None:
-        plt.axvline(theta[0])
+    
+    for i in xrange(n):
+        print subplots[i]
+        plt.subplot(int(subplots[i]))
+        #plt.title(thetas[0])
+        ker = stats.gaussian_kde(P[i])
+        h = plt.hist(P[i], bins=bins, normed=True, alpha=1)
+        x = np.linspace(h[1][0],h[1][-1],1000)
+        plt.plot(x,ker(x))
+        plt.xlabel(labels[i], labelpad=labelpad, fontsize=24)
+        if theta != None:
+            plt.axvline(theta[0])
 
-    ax1 = plt.subplot(subplots[1])
-    #plt.title(thetas[1])
-    ker = stats.gaussian_kde(P[1])
-    plt.hist(P[1], bins=bins, normed=True, alpha=1)
-    x = np.linspace(0.0,1.0,1000)
-    plt.plot(x,ker(x))
-    plt.xlabel(r"$\sigma_{e}$", labelpad=labelpad)
-    if theta != None:
-        plt.axvline(theta[1])
-
-    plt.subplot(subplots[2])
-    #plt.title(thetas[2])
-    ker = stats.gaussian_kde(P[2])
-    plt.hist(P[2], bins=bins, normed=True, alpha=1)
-    x = np.linspace(0,20,1000)
-    plt.plot(x,ker(x))
-    plt.xlabel(r"$\lambda$", labelpad=labelpad)
-    if theta != None:
-        plt.axvline(theta[2])
+    for t in thetas: 
+        print t
 
     return fig
 
