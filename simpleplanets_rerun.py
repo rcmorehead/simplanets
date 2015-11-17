@@ -41,9 +41,14 @@ model.set_prior([stats.uniform(0, 90.0),
 model.set_data(obs)
 
 start = time.time()
-OT = pickle.load(file(
-          'RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, start_step),
-            'r'))
+if known:
+    OT = pickle.load(file(
+                'RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, 
+                start_step), 'r'))
+else:
+    OT = pickle.load(file(
+                'RUNS/{0}/SCIENCE/{0}_{1}samples_{2}.pkl'.format(name, min_part, 
+                start_step),'r'))
 
 for i in range(start_step + 1, start_step + 1 + steps):
     PT = OT
