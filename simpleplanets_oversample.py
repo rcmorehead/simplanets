@@ -35,8 +35,9 @@ else:
     obs = pickle.load(file('RUNS/{0}/SCIENCE/obs_data.pkl'.format(name), 'r'))
 
 model.set_prior([stats.uniform(0, 90.0),
-                 stats.uniform(0, 1),
-                 stats.uniform(0, 20)])
+                 stats.uniform(0, 10),
+                 stats.uniform(0, 20),
+                 stats.uniform(0, 1)])
 
 model.set_data(obs)
 
