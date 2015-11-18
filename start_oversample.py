@@ -39,5 +39,5 @@ cd $PBS_O_WORKDIR'''.format(name, 1, j)
 
   pbs_file.close()
   
-  os.system("qsub {:}".format(pbs_file))
+  os.system("qsub {:}".format(pbs_name))
 
