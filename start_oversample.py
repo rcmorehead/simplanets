@@ -20,7 +20,7 @@ for j in xrange(jobs):
   pbs_head = '''
 #!/bin/bash
 #
-#PBS -N {0:}_osamp_{:2}
+#PBS -N {0:}_osamp_{2:}
 #PBS -M abc-sim@psu.edu
 #PBS -m abe
 #PBS -A ebf11_collab
@@ -39,7 +39,7 @@ cd $PBS_O_WORKDIR'''.format(name, n_procs, j)
   pbs_file = file(pbs_name, 'w')
   print >> pbs_file, pbs_head
   print >> pbs_file, """python simpleplanets_oversample.py {:} {:} {:} {:} {:} {:} {:}
-                   """.format(name, 1, start-1, min_part, 1, scinece, j)
+                   """.format(name, 1, start-1, min_part, 1, science, j)
 
   pbs_file.close()
   
