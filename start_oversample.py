@@ -11,10 +11,6 @@ jobs = int(raw_input('Enter number of pbs jobs: '))
 
 print "Oversampling {}".format(name)
 
-
-
-
-
 for j in xrange(jobs):
 
   pbs_head = '''
@@ -31,7 +27,7 @@ for j in xrange(jobs):
 #PBS -e runs/
 #PBS -j oe
 #
-cd $PBS_O_WORKDIR'''.format(name, n_procs, j)
+cd $PBS_O_WORKDIR'''.format(name, 1, j)
 
   pbs_name = 'pbs_scripts/{:}oversample_{:}.pbs'.format(name,j)
 
