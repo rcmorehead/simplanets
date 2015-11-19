@@ -54,7 +54,8 @@ else:
 
 
 OT = simple_abc.pmc_abc(model, obs, epsilon_0=1, min_samples=job_particles,
-                    resume=PT, steps=1, parallel=False, n_procs=n_procs)
+                    resume=PT, steps=1, parallel=False, n_procs=n_procs, 
+                    sample_only=True)
 if known:
     out_pickle = file(
         'RUNS/{0}/KNOWN/{0}_{1}_oversample{3}_{2}.pkl'.format(name, min_part, osamp_num, start_step+1),
