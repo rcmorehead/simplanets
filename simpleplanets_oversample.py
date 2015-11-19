@@ -13,6 +13,7 @@ min_part = int(sys.argv[4])
 n_procs = int(sys.argv[5])
 known = sys.argv[6]
 osamp_num = int(sys.argv[7])
+job_particles = int(sys.argv[8])
 
 
 #print known, type(known)
@@ -53,7 +54,7 @@ else:
                 start_step),'r'))
 
 
-OT = simple_abc.pmc_abc(model, obs, epsilon_0=1, min_samples=min_part,
+OT = simple_abc.pmc_abc(model, obs, epsilon_0=1, min_samples=job_particles,
                     resume=PT, steps=1, parallel=False, n_procs=n_procs)
 if known:
     out_pickle = file(
