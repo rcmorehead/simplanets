@@ -30,7 +30,7 @@ if known:
     obs = model.generate_data(theta_0)
     print obs[0:3]
 else:
-    obs = np.recfromcsv('q1_q17_dr24_koi_mcmc_only.csv',
+    obs = np.recfromcsv('04012015_trimmed.csv',
                         usecols=(1,4,14,32,48), delimiter=",")
     obs = obs[obs['koi_disposition'] != "FALSE POSITIVE"]
     obs.dtype.names = ('ktc_kepler_id','koi_disposition','period',
