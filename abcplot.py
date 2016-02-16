@@ -70,6 +70,9 @@ def lookatresults(data, modes, theta=None, vert=False, labels=None):
     if vert == True:
         subplots = range(n*100+11,n*100+n+11,1)
         figsize = (6, 3*n)
+    elif vert == 'four':
+        subplots = [221, 222, 223, 224]
+        figsize = (10, 10)
     else:
         subplots = range(100+n*10+1,100+n*10+1+n,1)
         figsize = (5*n, 3)
