@@ -168,6 +168,8 @@ class MyModel(Model):
         #KS Distance for Multie Count
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
         
+        d = np.max([d1,d2])
+
         return d
 
     #@profile
