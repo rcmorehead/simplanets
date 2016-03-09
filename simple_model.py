@@ -167,29 +167,7 @@ class MyModel(Model):
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         #KS Distance for Multie Count
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-        #Ecluidian for single/multi ratio
-        d3 = np.abs(summary_stats_synth[2] - summary_stats[2])
-        #Ecluidian for xi 10/90 precentiles
-        #Can have no multies and the edge of prior space
-        if summary_stats_synth[0].size == 0:
-            synth90, synth10 = 0,0
-        else:
-            synth90, synth10 = np.percentile(summary_stats_synth[0], [90 ,10])
-        p90, p10 = np.percentile(summary_stats[0], [90 ,10])
-        d4 = np.abs(synth90 - p90)/p90
-        d5 = np.abs(synth10 - p10)/p10
-        d6 = (summary_stats_synth[3] - summary_stats[3])/float(summary_stats[3])
-        #Histogram distance for count
-        #max1 = summary_stats[1].max()
-        #max2 = summary_stats_synth[1].max()
-
-        #h1 = np.histogram(summary_stats[1], bins=range(0, maxbin+1),
-        #                  density=True)
-        #h2 = np.histogram(summary_stats_synth[1], bins=range(0, maxbin+1),
-        #                  density=True)
-
-        d =  np.sqrt(d1**2 + d2**2 + d3**2 + d4**2 + d5**2 + d6**2)
-
+        
         return d
 
     #@profile
