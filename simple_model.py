@@ -166,7 +166,10 @@ class MyModel(Model):
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         #KS Distance for Multie Count
-        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+        trim1 = summary_stats[1][summary_stats[1] != 0]
+        trim2 = summary_stats_synth[1][summary_stats_synth[1]) != 0]
+
+        d2 = stats.ks_2samp(trim1, trim2)[0]
         
         d = np.max([d1,d2])
 
