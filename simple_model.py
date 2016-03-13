@@ -155,11 +155,8 @@ class MyModel(Model):
             multies = simple_lib.multi_count(data, self.stars)
             h = np.histogram(multies, bins=multies.max() + 1)
             multie_ratio = h[0][2:].sum()/float(h[0][1])
-            #return (simple_lib.xi(simple_lib.multies_only(data))[0],
-            #        multies, multie_ratio, data.size)
-            #return (data['T'], multies, multie_ratio, data.size)
             return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    multies, data['T'])
+                    multies, multie_ratio, data.size)
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
@@ -170,10 +167,10 @@ class MyModel(Model):
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         #KS Distance for Multie Count
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
-        #KS Distance for T
-        d3 = stats.ks_2samp(summary_stats[2], summary_stats_synth[2])[0]
-        
-        d = np.max([d1, d2, d3])
+
+        d3 = (summary_stats_synth[3] - summary_stats[3])/float(summary_stats[3])
+
+        d =  np.max([d1, d2, d3])
 
         return d
 
