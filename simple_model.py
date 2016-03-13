@@ -157,7 +157,9 @@ class MyModel(Model):
             multie_ratio = h[0][2:].sum()/float(h[0][1])
             #return (simple_lib.xi(simple_lib.multies_only(data))[0],
             #        multies, multie_ratio, data.size)
-            return (data['T'], multies, multie_ratio, data.size)
+            #return (data['T'], multies, multie_ratio, data.size)
+            return (simple_lib.xi(simple_lib.multies_only(data))[0],
+                    multies, data['T'])
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
@@ -167,12 +169,11 @@ class MyModel(Model):
         #KS Distance for xi
         d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
         #KS Distance for Multie Count
-        trim1 = summary_stats[1]#[summary_stats[1] != 0]
-        trim2 = summary_stats_synth[1]#[summary_stats_synth[1] != 0]
-
-        d2 = stats.ks_2samp(trim1, trim2)[0]
+        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
+        #KS Distance for T
+        d3 = stats.ks_2samp(summary_stats[2], summary_stats_synth[2])[0]
         
-        d = np.max([d1,d2])
+        d = np.max([d1, d2, d3])
 
         return d
 
