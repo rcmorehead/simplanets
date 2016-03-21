@@ -66,10 +66,13 @@ class MyModel(Model):
 
 
         fund_plane_draw = self.fundamental_plane(select_stars.size)
+        mi_scales = self.mutual_inclination(theta[0], select_stars.size)
+        catalog['mi'] =self.mi_draw(mi_scales, planet_numbers, total_planets)
+
         catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
         catalog['period'] = self.planet_period(total_planets)
-        catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
+        #catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
 
         catalog['fund_node'] = self.fundamental_node(total_planets)
 
@@ -196,6 +199,13 @@ class MyModel(Model):
     #@profile
     def mutual_inclination(self, scale, size):
         return stats.rayleigh.rvs(scale, size=size)
+
+    #@profile
+    def mi_draw(self, scales, planet_numbers, total_planets):
+        mi = []
+        for j,s in enumerate(scales):
+            mi.append(stats.rayleigh.rvs(s, size=planet_numbers[j]))
+        return np.hstack(mi)
 
     #@profile
     def eccentricity(self, scale, size):
