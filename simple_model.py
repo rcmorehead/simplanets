@@ -217,9 +217,9 @@ class MyModel(Model):
 
     #@profile
     def eccentricity(self, scale, size):
-        #edraw = stats.rayleigh.rvs(scale=scale, size=size)
-        #return np.where(edraw >= 1.0, 0.99, edraw)
-        return np.zeros(size)
+        edraw = stats.rayleigh.rvs(scale=scale, size=size)
+        return np.where(edraw >= 1.0, 0.99, edraw)
+        
 
     #@profile
     def longitude_ascending_node(self, size):
