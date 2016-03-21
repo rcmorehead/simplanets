@@ -24,7 +24,7 @@ class MyModel(Model):
         result['prior'] = [p.kwds for p in self.prior]
         return result
 
-       #@profile
+    #@profile
     def __setstate__(self, state):
         np.random.seed()
         self.__dict__ = state
@@ -202,15 +202,24 @@ class MyModel(Model):
 
     #@profile
     def mi_draw(self, scales, planet_numbers, total_planets):
-        mi = []
-        for j,s in enumerate(scales):
-            mi.append(stats.rayleigh.rvs(s, size=planet_numbers[j]))
-        return np.hstack(mi)
+        mi = np.zeros(total_planets)
+        M = stats.rayleigh.rvs(scales, size=(planet_numbers.max(),
+                                            scales.size)).T
+
+        k = 0
+        for j,s in enumerate(planet_numbers):
+            if s > 0:
+                for i in range(0, s):
+                    mi[k] = M[j][i]
+                    k += 1
+        
+        return mi
 
     #@profile
     def eccentricity(self, scale, size):
-        edraw = stats.rayleigh.rvs(scale=scale, size=size)
-        return np.where(edraw >= 1.0, 0.99, edraw)
+        #edraw = stats.rayleigh.rvs(scale=scale, size=size)
+        #return np.where(edraw >= 1.0, 0.99, edraw)
+        return np.zeros(size)
 
     #@profile
     def longitude_ascending_node(self, size):
