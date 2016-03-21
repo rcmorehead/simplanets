@@ -24,7 +24,7 @@ class MyModel(Model):
         result['prior'] = [p.kwds for p in self.prior]
         return result
 
-       #@profile
+    #@profile
     def __setstate__(self, state):
         np.random.seed()
         self.__dict__ = state
@@ -66,10 +66,13 @@ class MyModel(Model):
 
 
         fund_plane_draw = self.fundamental_plane(select_stars.size)
+        mi_scales = self.mutual_inclination(theta[0], select_stars.size)
+        catalog['mi'] =self.mi_draw(mi_scales, planet_numbers, total_planets)
+
         catalog['fund_plane'] = np.repeat(fund_plane_draw, planet_numbers)
 
         catalog['period'] = self.planet_period(total_planets)
-        catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
+        #catalog['mi'] = self.mutual_inclination(theta[0], total_planets)
 
         catalog['fund_node'] = self.fundamental_node(total_planets)
 
@@ -198,9 +201,25 @@ class MyModel(Model):
         return stats.rayleigh.rvs(scale=scale, size=size)
 
     #@profile
+    def mi_draw(self, scales, planet_numbers, total_planets):
+        mi = np.zeros(total_planets)
+        M = stats.rayleigh.rvs(scales, size=(planet_numbers.max(),
+                                            scales.size)).T
+
+        k = 0
+        for j,s in enumerate(planet_numbers):
+            if s > 0:
+                for i in range(0, s):
+                    mi[k] = M[j][i]
+                    k += 1
+        
+        return mi
+
+    #@profile
     def eccentricity(self, scale, size):
         edraw = stats.rayleigh.rvs(scale=scale, size=size)
         return np.where(edraw >= 1.0, 0.99, edraw)
+        
 
     #@profile
     def longitude_ascending_node(self, size):
