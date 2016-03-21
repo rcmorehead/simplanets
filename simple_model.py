@@ -196,7 +196,7 @@ class MyModel(Model):
 
     #@profile
     def mutual_inclination(self, scale, size):
-        return stats.rayleigh.rvs(scale, size=size)
+        return stats.rayleigh.rvs(scale=scale, size=size)
 
     #@profile
     def eccentricity(self, scale, size):
