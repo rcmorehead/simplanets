@@ -198,7 +198,7 @@ class MyModel(Model):
 
     #@profile
     def mutual_inclination(self, scale, size):
-        return stats.rayleigh.rvs(scale, size=size)
+        return stats.rayleigh.rvs(scale=scale, size=size)
 
     #@profile
     def mi_draw(self, scales, planet_numbers, total_planets):
