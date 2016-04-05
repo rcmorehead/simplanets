@@ -30,8 +30,7 @@ class MyModel(Model):
         self.__dict__ = state
         new_prior = [stats.uniform(**state['prior'][0]),
                      stats.uniform(**state['prior'][1]),
-                     stats.uniform(**state['prior'][2]),
-                     stats.uniform(**state['prior'][3])]
+                     stats.uniform(**state['prior'][2]),]
         self.__dict__['prior'] = new_prior
 
     #@profile
@@ -45,8 +44,8 @@ class MyModel(Model):
     def generate_data(self, theta):
 
         #Draw the random model parameters.
-        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or theta[3] < 0 or
-            theta[0] > 90.0 or theta[1] > 10 or theta[2] > 20 or theta[3] > 1):
+        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0 or 
+            theta[0] > 90.0 or theta[1] > 10 or theta[2] > 20):
 
             #planet_numbers = np.ones(1)
             #total_planets = planet_numbers.sum()
@@ -55,14 +54,17 @@ class MyModel(Model):
             return np.array([])
 
         else:
-            select_stars = np.random.choice(self.stars,
-                size=int(np.around(theta[3]*self.stars.size)), replace=False)
+
 
             planet_numbers = (self.planets_per_system(theta[2],
-                          select_stars['ktc_kepler_id'].size))
+                            self.stars['ktc_kepler_id'].size))
+            select_stars = self.stars[planet_numbers > 0]
+            planet_numbers = planet_numbers[planet_numbers > 0] 
+            print select_stars['ktc_kepler_id'][0:50]
             total_planets = planet_numbers.sum()
             catalog, star_header, planet_header = self.init_catalog(
                                                         total_planets)
+
 
 
         fund_plane_draw = self.fundamental_plane(select_stars.size)
@@ -80,7 +82,6 @@ class MyModel(Model):
             catalog[h] = np.repeat(select_stars[h], planet_numbers)
 
         # print catalog.dtype.names
-
         catalog = catalog[(catalog['period'] >= 10.0) &
                           (catalog['period'] <= 320.0)]
 
@@ -166,9 +167,9 @@ class MyModel(Model):
         #KS Distance for Multie Count
         d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
 
-        d3 = abs((summary_stats_synth[3] - summary_stats[3])/float(summary_stats[3]))
+        d3 = abs((summary_stats_synth[3]/float(summary_stats[3]) - 1))
 
-        d4 = abs((summary_stats_synth[2]/summary_stats[2]) - 1)
+        d4 = abs((summary_stats_synth[2]/float(summary_stats[2]) - 1))
 
         d =  np.max([d1, d2, d3, d4])
 
