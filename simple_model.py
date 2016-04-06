@@ -60,7 +60,7 @@ class MyModel(Model):
                             self.stars['ktc_kepler_id'].size))
             select_stars = self.stars[planet_numbers > 0]
             planet_numbers = planet_numbers[planet_numbers > 0] 
-            print select_stars['ktc_kepler_id'][0:50]
+            #print select_stars['ktc_kepler_id'][0:50]
             total_planets = planet_numbers.sum()
             catalog, star_header, planet_header = self.init_catalog(
                                                         total_planets)
