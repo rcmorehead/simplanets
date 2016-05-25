@@ -182,7 +182,7 @@ class MyModel(Model):
 
     #@profile
     def planet_period(self, size):
-        return 10**stats.uniform.rvs(0, 3, size=size)
+        return 10**stats.uniform.rvs(1, np.log10(320) - 1, size=size)
 
     #@profile
     def fundamental_node(self, size):
