@@ -164,13 +164,23 @@ class MyModel(Model):
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
-        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
-        #KS Distance for Multie Count
-        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
 
-        d3 = abs((summary_stats_synth[3] - summary_stats[3])/float(summary_stats[3]))
+
+        d3 = abs((summary_stats_synth[3] - 
+                  summary_stats[3])/float(summary_stats[3]))
 
         d4 = abs((summary_stats_synth[2]/summary_stats[2]) - 1)
+
+        if d3 <= 0.5 :
+            
+            d1 = stats.anderson_ksamp([summary_stats[0], 
+                                      summary_stats_synth[0]])[0]
+            #KS Distance for Multie Count
+            d2 = stats.anderson_ksamp([summary_stats[1], 
+                                      summary_stats_synth[1]])[0]
+        else:
+            d1 = d3
+            d2 = d3
 
         d =  np.max([d1, d2, d3, d4])
 
