@@ -174,10 +174,10 @@ class MyModel(Model):
 
         if d3 <= 0.5 :
             
-            d1 = stats.anderson_ksamp([summary_stats[0], 
+            d1 = simple_lib.anderson_ksamp([summary_stats[0], 
                                       summary_stats_synth[0]])[0]
             #KS Distance for Multie Count
-            d2 = stats.anderson_ksamp([summary_stats[1], 
+            d2 = simple_lib.anderson_ksamp([summary_stats[1], 
                                       summary_stats_synth[1]])[0]
         else:
             d1 = d3
