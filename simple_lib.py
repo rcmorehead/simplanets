@@ -3,6 +3,7 @@ Useful classes and functions for SIMPLE.
 """
 import numpy as np
 import warnings
+import math
 r_sun_au = 0.004649
 r_earth_r_sun = 0.009155
 day_hrs = 24.0
@@ -359,3 +360,172 @@ def normed_duration(catalog):
     """
 
     return (catalog['T']/day_hrs)/(catalog['period'])**(1/3.0)
+
+def _anderson_ksamp_midrank(samples, Z, Zstar, k, n, N):
+    """
+    Compute A2akN equation 7 of Scholz and Stephens.
+    Parameters
+    ----------
+    samples : sequence of 1-D array_like
+        Array of sample arrays.
+    Z : array_like
+        Sorted array of all observations.
+    Zstar : array_like
+        Sorted array of unique observations.
+    k : int
+        Number of samples.
+    n : array_like
+        Number of observations in each sample.
+    N : int
+        Total number of observations.
+    Returns
+    -------
+    A2aKN : float
+        The A2aKN statistics of Scholz and Stephens 1987.
+    """
+
+    A2akN = 0.
+    Z_ssorted_left = Z.searchsorted(Zstar, 'left')
+    if N == Zstar.size:
+        lj = 1.
+    else:
+        lj = Z.searchsorted(Zstar, 'right') - Z_ssorted_left
+    Bj = Z_ssorted_left + lj / 2.
+    for i in np.arange(0, k):
+        s = np.sort(samples[i])
+        s_ssorted_right = s.searchsorted(Zstar, side='right')
+        Mij = s_ssorted_right.astype(np.float)
+        fij = s_ssorted_right - s.searchsorted(Zstar, 'left')
+        Mij -= fij / 2.
+        inner = lj / float(N) * (N * Mij - Bj * n[i])**2 / \
+            (Bj * (N - Bj) - N * lj / 4.)
+        A2akN += inner.sum() / n[i]
+    A2akN *= (N - 1.) / N
+    return A2akN
+
+
+def _anderson_ksamp_right(samples, Z, Zstar, k, n, N):
+    """
+    Compute A2akN equation 6 of Scholz & Stephens.
+    Parameters
+    ----------
+    samples : sequence of 1-D array_like
+        Array of sample arrays.
+    Z : array_like
+        Sorted array of all observations.
+    Zstar : array_like
+        Sorted array of unique observations.
+    k : int
+        Number of samples.
+    n : array_like
+        Number of observations in each sample.
+    N : int
+        Total number of observations.
+    Returns
+    -------
+    A2KN : float
+        The A2KN statistics of Scholz and Stephens 1987.
+    """
+
+    A2kN = 0.
+    lj = Z.searchsorted(Zstar[:-1], 'right') - Z.searchsorted(Zstar[:-1],
+                                                              'left')
+    Bj = lj.cumsum()
+    for i in np.arange(0, k):
+        s = np.sort(samples[i])
+        Mij = s.searchsorted(Zstar[:-1], side='right')
+        inner = lj / float(N) * (N * Mij - Bj * n[i])**2 / (Bj * (N - Bj))
+        A2kN += inner.sum() / n[i]
+    return A2kN
+
+
+def anderson_ksamp(samples, midrank=True):
+    """The Anderson-Darling test for k-samples.
+    The k-sample Anderson-Darling test is a modification of the
+    one-sample Anderson-Darling test. It tests the null hypothesis
+    that k-samples are drawn from the same population without having
+    to specify the distribution function of that population. The
+    critical values depend on the number of samples.
+    Parameters
+    ----------
+    samples : sequence of 1-D array_like
+        Array of sample data in arrays.
+    midrank : bool, optional
+        Type of Anderson-Darling test which is computed. Default
+        (True) is the midrank test applicable to continuous and
+        discrete populations. If False, the right side empirical
+        distribution is used.
+    Returns
+    -------
+    A2 : float
+        Normalized k-sample Anderson-Darling test statistic.
+    critical : array
+        The critical values for significance levels 25%, 10%, 5%, 2.5%, 1%.
+    logp : float
+        The log (ln) of an approximate significance level at which the null hypothesis for the
+        provided samples can be rejected.
+    Raises
+    ------
+    ValueError
+        If less than 2 samples are provided, a sample is empty, or no
+        distinct observations are in the samples.
+    See Also
+    --------
+    ks_2samp : 2 sample Kolmogorov-Smirnov test
+    anderson : 1 sample Anderson-Darling test
+    Notes
+    -----
+    [1]_ Defines three versions of the k-sample Anderson-Darling test:
+    one for continuous distributions and two for discrete
+    distributions, in which ties between samples may occur. The
+    default of this routine is to compute the version based on the
+    midrank empirical distribution function. This test is applicable
+    to continuous and discrete data. If midrank is set to False, the
+    right side empirical distribution is used for a test for discrete
+    data. According to [1]_, the two discrete test statistics differ
+    only slightly if a few collisions due to round-off errors occur in
+    the test not adjusted for ties between samples.
+    .. versionadded:: 0.14.0
+    References
+    ----------
+    .. [1] Scholz, F. W and Stephens, M. A. (1987), K-Sample
+           Anderson-Darling Tests, Journal of the American Statistical
+           Association, Vol. 82, pp. 918-924.
+    """
+    k = len(samples)
+    if (k < 2):
+        raise ValueError("anderson_ksamp needs at least two samples")
+
+    samples = list(map(np.asarray, samples))
+    Z = np.sort(np.hstack(samples))
+    N = Z.size
+    Zstar = np.unique(Z)
+    if Zstar.size < 2:
+        raise ValueError("anderson_ksamp needs more than one distinct "
+                         "observation")
+
+    n = np.array([sample.size for sample in samples])
+    if any(n == 0):
+        raise ValueError("anderson_ksamp encountered sample without "
+                         "observations")
+
+    if midrank:
+        A2kN = _anderson_ksamp_midrank(samples, Z, Zstar, k, n, N)
+    else:
+        A2kN = _anderson_ksamp_right(samples, Z, Zstar, k, n, N)
+
+    h = (1. / np.arange(1, N)).sum()
+    H = (1. / n).sum()
+    g = 0
+    for l in np.arange(1, N-1):
+        inner = np.array([1. / ((N - l) * m) for m in np.arange(l+1, N)])
+        g += inner.sum()
+
+    a = (4*g - 6) * (k - 1) + (10 - 6*g)*H
+    b = (2*g - 4)*k**2 + 8*h*k + (2*g - 14*h - 4)*H - 8*h + 4*g - 6
+    c = (6*h + 2*g - 2)*k**2 + (4*h - 4*g + 6)*k + (2*h - 6)*H + 4*h
+    d = (2*h + 6)*k**2 - 4*h*k
+    sigmasq = (a*N**3 + b*N**2 + c*N + d) / ((N - 1.) * (N - 2.) * (N - 3.))
+    m = k - 1
+    A2 = (A2kN - m) / math.sqrt(sigmasq)
+    return A2
