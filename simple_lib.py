@@ -4,6 +4,8 @@ Useful classes and functions for SIMPLE.
 import numpy as np
 import warnings
 import math
+from scipy import integrate
+
 r_sun_au = 0.004649
 r_earth_r_sun = 0.009155
 day_hrs = 24.0
@@ -529,3 +531,31 @@ def anderson_ksamp(samples, midrank=True):
     m = k - 1
     A2 = (A2kN - m) / math.sqrt(sigmasq)
     return A2
+
+
+def hellinger_funct(x,P,Q):
+    """
+    P,Q should be numpy stats gkde objects
+    """
+    return np.sqrt(P(x) * Q(x))
+
+def hellinger_cont(P,Q):
+    """
+    P,Q should be numpy stats gkde objects
+    F should be the hellinger_funct method
+    """
+    return 1 - integrate.quad(hellinger_funct, -np.inf, np.inf, args=(P,Q))[0]
+
+def hellinger_disc(P,Q):
+    """
+    P,Q should be numpy histogram objects that have density=True
+    """
+    if P[0].size == Q[0].size:
+        pass
+    else:
+        if P[0].size > Q[0].size:
+            Q[0].resize(P[0].size)
+        else:
+            P[0].resize(Q[0].size)
+        
+    return  1 - np.sum(np.sqrt(P[0]*Q[0]))
