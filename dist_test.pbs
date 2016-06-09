@@ -1,0 +1,16 @@
+
+#!/bin/bash
+#
+#PBS -N distance_test
+#PBS -M abc-sim@psu.edu
+#PBS -m abe
+#PBS -A ebf11_collab
+#PBS -l pmem=4gb
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=04:00:00
+#PBS -o runs/
+#PBS -e runs/
+#PBS -j oe
+#
+cd $PBS_O_WORKDIR
+python distance_test.py distance_test_results
