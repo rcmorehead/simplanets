@@ -153,10 +153,15 @@ class MyModel(Model):
             return False
         else:
             multies = simple_lib.multi_count(data, self.stars)
-            h = np.histogram(multies, bins=multies.max() + 1)
-            multie_ratio = h[0][2:].sum()/float(h[0][1])
-            return (simple_lib.xi(simple_lib.multies_only(data))[0],
-                    multies, multie_ratio, data.size)
+            h = np.histogram(multies, bins=range(0, int(multies.max()) + 1),
+                             density=True)
+            #multie_ratio = h[0][2:].sum()/float(h[0][1])
+            #return (simple_lib.xi(simple_lib.multies_only(data))[0],
+            #        multies, multie_ratio, data.size)
+            g = stats.gaussian_kde(simple_lib.xi(
+                                   simple_lib.multies_only(data))[0])
+            return(g, h[0])
+            
 
     #@profile
     def distance_function(self, summary_stats, summary_stats_synth):
@@ -164,15 +169,14 @@ class MyModel(Model):
         if summary_stats == False or summary_stats_synth == False:
             return 1e9
         #KS Distance for xi
-        d1 = stats.ks_2samp(summary_stats[0], summary_stats_synth[0])[0]
-        #KS Distance for Multie Count
-        d2 = stats.ks_2samp(summary_stats[1], summary_stats_synth[1])[0]
 
-        d3 = abs((summary_stats_synth[3] - summary_stats[3])/float(summary_stats[3]))
+        d1 = simple_lib.hellinger_cont(summary_stats_synth[0], 
+                                          summary_stats[0])
 
-        d4 = abs((summary_stats_synth[2]/summary_stats[2]) - 1)
+        d2 = simple_lib.hellinger_disc(summary_stats_synth[1], 
+                                          summary_stats[1])
 
-        d =  np.max([d1, d2, d3, d4])
+        d =  np.max([d1, d2])
 
         return d
 
