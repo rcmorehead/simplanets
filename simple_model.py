@@ -159,8 +159,14 @@ class MyModel(Model):
             #multie_ratio = h[0][2:].sum()/float(h[0][1])
             #return (simple_lib.xi(simple_lib.multies_only(data))[0],
             #        multies, multie_ratio, data.size)
-            g = stats.gaussian_kde(simple_lib.xi(
-                                   simple_lib.multies_only(data))[0])
+
+            xi = simple_lib.xi(simple_lib.multies_only(data))[0]
+            #xi array must have at lest two unique elements for kde
+            if xi.size == 1:
+                xi = np.concatenate([xi, xi+0.0005])
+            if xi.size == 0:
+                xi = np.array([0.0, 0.0005])
+            g = stats.gaussian_kde(xi)
             return(g, h[0])
             
 
