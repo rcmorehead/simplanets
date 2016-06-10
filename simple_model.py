@@ -182,7 +182,7 @@ class MyModel(Model):
         d2 = simple_lib.hellinger_disc(summary_stats_synth[1], 
                                           summary_stats[1])
 
-        d =  np.max([d1, d2])
+        d =  np.sqrt(d1**2 + d2**2)
 
         return d
 
