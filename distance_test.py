@@ -10,7 +10,7 @@ import sys
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-N = 1000
+N = 100
 
 stars = pickle.load(file('stars.pkl'))
 model = simple_model.MyModel(stars)
@@ -43,7 +43,7 @@ for n in xrange(N):
 
 for i in xrange(len(model.prior)):
     T = list(theta_0) 
-    Xs = np.linspace(prior_bounds[i][0]+0.0001,prior_bounds[i][1]-0.0001, 100)
+    Xs = np.linspace(prior_bounds[i][0]+0.01,prior_bounds[i][1]-0.01, 100)
     d = []
     for x in Xs:
         T[i] = x
