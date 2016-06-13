@@ -153,8 +153,8 @@ class MyModel(Model):
             return False
         else:
             multies = simple_lib.multi_count(data, self.stars)
-            h = np.histogram(multies, bins=range(0, int(multies.max()) + 1),
-                             density=True)
+            H = np.histogram(multies, bins=range(0, int(multies.max()) + 1))
+            h = H[0][1::]/float(sum(H[0][1::]))
             #multie_ratio = h[0][2:].sum()/float(h[0][1])
             #return (simple_lib.xi(simple_lib.multies_only(data))[0],
             #        multies, multie_ratio, data.size)
@@ -166,7 +166,7 @@ class MyModel(Model):
             if xi.size == 0:
                 xi = np.array([0.0, 0.0005])
             g = stats.gaussian_kde(xi)
-            return(g, h[0])
+            return(g, h)
             
 
     #@profile
@@ -182,7 +182,7 @@ class MyModel(Model):
         d2 = simple_lib.hellinger_disc(summary_stats_synth[1], 
                                           summary_stats[1])
 
-        d =  np.sqrt(d1**2 + d2**2)
+        d =  max(d1, d2)
 
         return d
 
