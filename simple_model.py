@@ -186,7 +186,7 @@ class MyModel(Model):
 
         d =  max(d1, d2)
 
-        return d1
+        return d2
 
     #@profile
     def planets_per_system(self, Lambda, size):
