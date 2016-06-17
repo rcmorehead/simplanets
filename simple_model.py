@@ -154,8 +154,9 @@ class MyModel(Model):
             return False
         else:
             multies = simple_lib.multi_count(data, self.stars)
-            H = np.histogram(multies, bins=range(0, int(multies.max()) + 1))
-            h = H[0][1::]/float(sum(H[0][1::]))
+            h = np.histogram(multies, bins=range(0, int(multies.max()) + 1)
+                density=True)
+            #h = H[0][1::]/float(sum(H[0][1::]))
             #multie_ratio = h[0][2:].sum()/float(h[0][1])
             #return (simple_lib.xi(simple_lib.multies_only(data))[0],
             #        multies, multie_ratio, data.size)
@@ -185,7 +186,7 @@ class MyModel(Model):
 
         d =  max(d1, d2)
 
-        return d
+        return d1
 
     #@profile
     def planets_per_system(self, Lambda, size):
