@@ -10,7 +10,7 @@ import sys
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-N = 1000
+N = 100
 
 stars = pickle.load(file('stars.pkl'))
 model = simple_model.MyModel(stars)
@@ -22,7 +22,7 @@ model.set_prior([stats.uniform(prior_bounds[0][0],prior_bounds[0][1]),
                  stats.uniform(prior_bounds[2][0],prior_bounds[2][1]),
                   stats.uniform(prior_bounds[3][0],prior_bounds[3][1])])
 
-theta_0 = (10, 0.1, 10, 0.5)
+theta_0 = (10, 1.0, 10, 0.5)
 obs = model.generate_data(theta_0)
 
 model.set_data(obs)
