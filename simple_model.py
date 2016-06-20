@@ -183,14 +183,14 @@ class MyModel(Model):
 
         d2 = simple_lib.hellinger_disc(summary_stats_synth[1], 
                                           summary_stats[1])
-        w1 = summary_stats_synth[2]/(summary_stats_synth[2] 
+        w1 = summary_stats_synth[2]/float(summary_stats_synth[2] 
                                     + summary_stats_synth[3])
 
-        w2 = summary_stats_synth[3]/(summary_stats_synth[2] 
+        w2 = summary_stats_synth[3]/float(summary_stats_synth[2] 
                                     + summary_stats_synth[3])
 
 
-        d =  max(w1*d1, w2*d2)
+        d =  max([w1*d1, w2*d2])
 
         return d
 
