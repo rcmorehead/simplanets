@@ -183,7 +183,7 @@ class MyModel(Model):
         w1 = summary_stats_synth[2]/(summary_stats_synth[2] 
                                     + summary_stats_synth[3])
 
-        w1 = summary_stats_synth[3]/(summary_stats_synth[2] 
+        w2 = summary_stats_synth[3]/(summary_stats_synth[2] 
                                     + summary_stats_synth[3])
 
 
