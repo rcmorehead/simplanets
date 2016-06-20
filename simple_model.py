@@ -167,7 +167,7 @@ class MyModel(Model):
             if xi.size == 0:
                 xi = np.array([0.0, 0.0005])
             g = stats.gaussian_kde(xi)
-            return(g, h)
+            return(g, h, xi.size, multies.size)
             
 
     #@profile
@@ -182,10 +182,16 @@ class MyModel(Model):
 
         d2 = simple_lib.hellinger_disc(summary_stats_synth[1], 
                                           summary_stats[1])
+        w1 = summary_stats_synth[2]/(summary_stats_synth[2] 
+                                    + summary_stats_synth[3])
 
-        d =  max(d1, d2)
+        w1 = summary_stats_synth[3]/(summary_stats_synth[2] 
+                                    + summary_stats_synth[3])
 
-        return d2
+
+        d =  max(w1*d1, w2*d2)
+
+        return d
 
     #@profile
     def planets_per_system(self, Lambda, size):
