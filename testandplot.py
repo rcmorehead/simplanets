@@ -76,9 +76,9 @@ def lookatresults(data, name, modes):
 
 
     plt.figure()
-    f = triangle.corner(P.T, labels=thetas)
+    #f = triangle.corner(P.T, labels=thetas)
     #plt.savefig('trianle.png'.format(i))
-    plots.append(f)
+    #plots.append(f)
 
     return plots
 
@@ -92,53 +92,7 @@ def plot_modes(obs, modes, stars, model, data):
 
 
 
-        f = plt.figure()
-        plt.suptitle('Obs Cand.:{}; Sim Cand.:{}'.format(obs.size, synth.size))
-        plt.rc('legend', fontsize='xx-small', frameon=False)
-        plt.subplot(121)
-        bins = opt_bin(obs_stats[0],synth_stats[0])
-        plt.hist(obs_stats[0], bins=bins, histtype='step', label='Data')
-        plt.hist(synth_stats[0], bins=bins, histtype='step', label='Simulation')
-        plt.xlabel(r'$\xi$')
-        plt.legend()
-
-        plt.subplot(122)
-        bins = opt_bin(obs_stats[1],synth_stats[1])
-        plt.hist(obs_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
-                                              1),
-                 histtype='step', label='Data', log=True)
-        plt.hist(synth_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
-                                                1),
-                 histtype='step', label='Simulation', log=True)
-        plt.xlabel(r'$N_p$')
-        plt.legend()
-
-        plots.append(f)
-
-        f = plt.figure()
-        plt.suptitle('Normalized Planet Counts')
-        plt.subplot(121)
-        plt.hist(obs_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
-                                              1),
-                 histtype='step', label='Data', normed=True)
-        plt.hist(synth_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
-                                                1),
-                 histtype='step', label='Simulation', normed=True)
-        plt.xlabel(r'$N_p$')
-        plt.legend()
-
-
-        plt.subplot(122)
-        plt.hist(obs_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
-                                              1),
-                 histtype='step', label='Data', log=True, normed=True)
-        plt.hist(synth_stats[1], bins=np.arange(bins.min()-0.5, bins.max()+1.5,
-                                                1),
-                 histtype='step', label='Simulation', log=True, normed=True)
-        plt.xlabel(r'$N_p$')
-        plt.legend()
-
-        plots.append(f)
+        
 
         D = np.zeros(100)
         for i in xrange(100):
