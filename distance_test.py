@@ -22,6 +22,7 @@ model.set_prior([stats.uniform(prior_bounds[0][0],prior_bounds[0][1]),
                  stats.uniform(prior_bounds[2][0],prior_bounds[2][1]),
                   stats.uniform(prior_bounds[3][0],prior_bounds[3][1])])
 
+model.set_epsilon(0.05)
 theta_0 = (10, 1.0, 10, 0.5)
 obs = model.generate_data(theta_0)
 
