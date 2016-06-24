@@ -137,6 +137,7 @@ def main():
 
     stars = pickle.load(file('stars.pkl'))
     model = simple_model.MyModel(stars)
+    model.set_epsilon(data[-1]['epsilon'])
 
     f = stats.gaussian_kde(data[-1][0])
     int_guess = np.mean(data[-1][0], axis=1)
