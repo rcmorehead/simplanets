@@ -182,7 +182,7 @@ class MyModel(Model):
                                           summary_stats[1])
 
         #Thresholds set ahead of time by inspection
-        d1_threshold, d2_threshold = 0.003, 1e-5
+        d1_threshold, d2_threshold = 0.003, 0.0004
 
         if self.epsilon > d1_threshold and self.epsilon > d2_threshold:
             d = max((d1, d2))
