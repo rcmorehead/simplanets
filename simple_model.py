@@ -151,7 +151,7 @@ class MyModel(Model):
             return False
         else:
             multies = simple_lib.multi_count(data, self.stars)
-            h = np.histogram(multies, bins=range(0, int(multies.max()) + 1),
+            h = np.histogram(multies, bins=range(1, int(multies.max()) + 1),
                 density=True)
             #h = H[0][1::]/float(sum(H[0][1::]))
             #multie_ratio = h[0][2:].sum()/float(h[0][1])
