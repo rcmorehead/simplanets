@@ -193,12 +193,14 @@ class MyModel(Model):
         if d1_threshold > self.epsilon > d2_threshold:
             if d1 < d1_threshold:
                 d = d2
-            else d = max((d1, d2))
+            else: 
+                d = max((d1, d2))
 
         if d1_threshold >  d2_threshold > self.epsilon:
             if d1 < d1_threshold and d2 < d2_threshold:         
                 d = self.epsilon
-            else: d = max((d1, d2))
+            else: 
+                d = max((d1, d2))
 
         return d
 
