@@ -151,7 +151,7 @@ class MyModel(Model):
             return False
         else:
             multies = simple_lib.multi_count(data, self.stars)
-            h = np.histogram(multies, bins=range(1, int(multies.max()) + 1),
+            h = np.histogram(multies, bins=range(0, int(multies.max()) + 1),
                 density=True)
             #h = H[0][1::]/float(sum(H[0][1::]))
             #multie_ratio = h[0][2:].sum()/float(h[0][1])
@@ -182,16 +182,20 @@ class MyModel(Model):
                                           summary_stats[1])
 
         #Thresholds set ahead of time by inspection
-        d1_threshold, d2_threshold = 0.003, 0.0004
+        d1_threshold, d2_threshold = 0.003, 1e-5
 
         if self.epsilon > d1_threshold and self.epsilon > d2_threshold:
             d = max((d1, d2))
 
         if d1_threshold > self.epsilon > d2_threshold:
-            d = d2
+            if d1 < d1_threshold:
+                d = d2
+            else d = max((d1, d2))
 
         if d1_threshold >  d2_threshold > self.epsilon:
-            d = self.epsilon
+            if d1 < d1_threshold and d2 < d2_threshold:         
+                d = self.epsilon
+            else: d = max((d1, d2))
 
         return d
 
