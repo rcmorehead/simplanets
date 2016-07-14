@@ -165,7 +165,7 @@ class MyModel(Model):
             if xi.size == 0:
                 xi = np.array([0.0, 0.0005])
             g = stats.gaussian_kde(xi)
-            return(g, h, xi.size, multies.size)
+            return(multies, xi)
             
 
     #@profile
@@ -182,7 +182,7 @@ class MyModel(Model):
                                           summary_stats[1])
 
         #Thresholds set ahead of time by inspection
-        d1_threshold, d2_threshold = 0.003, 1e-5
+        d1_threshold, d2_threshold = 100, 100
 
         if self.epsilon > d1_threshold and self.epsilon > d2_threshold:
             d = max((d1, d2))
@@ -199,7 +199,7 @@ class MyModel(Model):
             else: 
                 d = max((d1, d2))
 
-        return d
+        return d1, d2
 
     #@profile
     def planets_per_system(self, Lambda, size):
