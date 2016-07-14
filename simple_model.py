@@ -184,7 +184,7 @@ class MyModel(Model):
                                           summary_stats[1])[0]
 
         #Thresholds set ahead of time by inspection
-        d1_threshold, d2_threshold = 100, 100
+        d1_threshold, d2_threshold = 0.03, 0.0003
 
         if self.epsilon > d1_threshold and self.epsilon > d2_threshold:
             d = max((d1, d2))
@@ -201,7 +201,7 @@ class MyModel(Model):
             else: 
                 d = max((d1, d2))
 
-        return d1, d2
+        return d
 
     #@profile
     def planets_per_system(self, Lambda, size):
