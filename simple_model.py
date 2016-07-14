@@ -168,7 +168,7 @@ class MyModel(Model):
             if xi.size == 0:
                 xi = np.array([0.0, 0.0005])
             g = stats.gaussian_kde(xi)
-            return(multies, xi)
+            return(xi, multies)
             
 
     #@profile
@@ -178,11 +178,11 @@ class MyModel(Model):
             return 1e9
         #KS Distance for xi
 
-        d1 = simple_lib.hellinger_cont(summary_stats_synth[0], 
-                                          summary_stats[0])
+        d1 = stats.ks_2samp(summary_stats_synth[0], 
+                                          summary_stats[0])[0]
 
-        d2 = simple_lib.hellinger_disc(summary_stats_synth[1], 
-                                          summary_stats[1])
+        d2 = stats.ks_2samp(summary_stats_synth[1], 
+                                          summary_stats[1])[0]
 
         #Thresholds set ahead of time by inspection
         d1_threshold, d2_threshold = 100, 100
