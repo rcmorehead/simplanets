@@ -204,7 +204,7 @@ class MyModel(Model):
                 d = max((d1, d2))
 
 
-        return d
+        return d1, d2
 
 
     #@profile
