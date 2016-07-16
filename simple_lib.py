@@ -564,7 +564,7 @@ def KL_funct(x, P, Q):
     """
     P,Q should be numpy stats gkde objects
     """
-    return np.log(P(x)) + np.log( np.log(P(x)) - np.log(Q(x)) )
+    return (P(x)) * ( np.log(P(x)) - np.log(Q(x)) )
 
 def KL_cont(P,Q, limits):
     """
