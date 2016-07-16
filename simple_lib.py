@@ -559,3 +559,40 @@ def hellinger_disc(P,Q):
             P[0].resize(Q[0].size)
         
     return  1 - np.sum(np.sqrt(P[0]*Q[0]))
+
+def KL_funct(x, P, Q):
+    """
+    P,Q should be numpy stats gkde objects
+    """
+    return np.log(P(x)) + np.log( np.log(P(x)) - np.log(Q(x)) )
+
+def KL_cont(P,Q, limits):
+    """
+    P,Q should be numpy stats gkde objects
+    """
+    return integrate.quad(KL_funct, limits[0], limits[1], args=(P,Q))[0]
+
+def KL_disc(P,Q):
+    """
+    P,Q should be numpy histogram objects that have density=False
+    """
+    
+    if P[0].size == Q[0].size:
+        pass
+    else:
+        if P[0].size > Q[0].size:
+            Q[0].resize(P[0].size)
+        else:
+            P[0].resize(Q[0].size)
+            
+    #KL divergence is defined only if Q(i)=0 implies P(i)=0, for all i 
+    #(absolute continuity)
+    P = np.where(Q[0] > 0, P[0],0)
+    #(re)normalize
+    P = P/P.sum()
+    Q = Q[0]/Q[0].sum()
+    #P(i) = 0 -> P(i)log(P(i)/Q(i)) = 0
+    ind = P > 0
+
+    return np.sum((P[ind]) * ((np.log(P[ind]) - np.log(Q[ind]))))
+
