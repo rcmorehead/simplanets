@@ -175,9 +175,11 @@ class MyModel(Model):
             return 1e9
         #KS Distance for xi
 
-        limits = (summary_stats[2].min(), summary_stats[2].min())
+        #limits = (summary_stats[2].min(), summary_stats[2].min())
         d1 = simple_lib.KL_cont(summary_stats_synth[0], 
-                                          summary_stats[0], limits)
+                                          summary_stats[0], 
+                                          summary_stats_synth[2], 
+                                          summary_stats[2],)
 
         d2 = simple_lib.KL_disc(summary_stats_synth[1], 
                                           summary_stats[1])
