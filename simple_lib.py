@@ -600,8 +600,20 @@ def KL_cont_sym(P, Q, P_points, Q_points):
     Plim = (P_points.min(), P_points.max())
     Qlim = (Q_points.min(), Q_points.max())
     
-    return KL_cont(P, Q, Plim) + KL_cont(Q, P, Qlim)
+    KL = KL_cont(P, Q, Plim) + KL_cont(Q, P, Qlim)
+    
+
+    if np.isfinite(KL) == False:
+        KL = 1e6
+    
+    return KL
 
 def KL_disc_sym(P,Q):
-    return KL_disc(P, Q) + KL_disc(Q, P)
+    KL = KL_disc(P, Q) + KL_disc(Q, P)
+    
+    if np.isfinite(KL) == False:
+        KL = 1e6
+    
+    return KL
+
 
