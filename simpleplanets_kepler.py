@@ -5,6 +5,7 @@ import pickle
 from scipy import stats
 import time
 import sys
+import os
 
 name = sys.argv[1]
 steps = int(sys.argv[2])
@@ -58,6 +59,8 @@ if known:
     observed = file('RUNS/{0}/KNOWN/obs_data.pkl'.format(name), 'w')
     pickle.dump(obs, observed)
     observed.close()
+    os.system('overviewplot.py RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name, min_part))
+
 
 else:
     out_pickle = file('RUNS/{0}/SCIENCE/{0}_{1}samples_0.pkl'.format(name,
@@ -66,8 +69,14 @@ else:
     pickle.dump(obs, observed)
     observed.close()
 
+
 pickle.dump(OT, out_pickle)
 out_pickle.close()
+
+if known:
+    os.system('overviewplot.py RUNS/{0}/KNOWN/{0}_{1}samples_0.pkl'.format(name, min_part))
+else:
+    os.system('overviewplot.py RUNS/{0}/SCIENCE/{0}_{1}samples_0.pkl'.format(name, min_part))
 
 for i in range(1, steps):
     PT = OT
@@ -84,6 +93,11 @@ for i in range(1, steps):
 
     pickle.dump(OT, out_pickle)
     out_pickle.close()
+
+    if known:
+        os.system('overviewplot.py RUNS/{0}/KNOWN/{0}_{1}samples_{2}.pkl'.format(name, min_part, i))
+    else:
+        os.system('overviewplot.py RUNS/{0}/SCIENCE/{0}_{1}samples_{2}.pkl'.format(name, min_part, i))
 
 end = time.time()
 print 'This run took {}s'.format(end - start)
