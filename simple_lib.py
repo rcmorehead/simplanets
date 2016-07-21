@@ -589,8 +589,8 @@ def KL_disc(P,Q):
     #(absolute continuity)
     P = np.where(Q[0] > 0, P[0],0)
     #(re)normalize
-    P = P/P.sum()
-    Q = Q[0]/Q[0].sum()
+    P = P/float(P.sum())
+    Q = Q[0]/float(Q[0].sum())
     #P(i) = 0 -> P(i)log(P(i)/Q(i)) = 0
     ind = P > 0
 
